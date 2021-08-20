@@ -121,7 +121,5 @@
     "node_modules/",
     "lib/"
   ],
-  "peerDependencies": {
-    "react-native-reanimated": "^2.0.0"
-  }
+  "peerDependencies": {}
 }

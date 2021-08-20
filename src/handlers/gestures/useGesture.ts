@@ -8,7 +8,7 @@ import {
   InteractionBuilder,
 } from './gesture';
 import { registerHandler, unregisterHandler } from '../handlersRegistry';
-import Animated from 'react-native-reanimated';
+//import Animated from 'react-native-reanimated';
 import {
   baseGestureHandlerWithMonitorProps,
   filterConfig,
@@ -36,9 +36,7 @@ export type GestureConfigReference = {
   config: GestureType[];
   callback: null | (() => void);
   animatedEventHandler: any;
-  animatedHandlers: Animated.SharedValue<
-    HandlerCallbacks<Record<string, unknown>>[] | null
-  > | null;
+  animatedHandlers: any;
   firstExecution: boolean;
 };
 

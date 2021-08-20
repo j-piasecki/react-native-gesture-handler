@@ -1,5 +1,5 @@
-//@ts-ignore useEvent is exported
-import { useEvent, useSharedValue } from 'react-native-reanimated';
+//import { useEvent, useSharedValue } from 'react-native-reanimated';
+import { Reanimated } from './reanimatedImport';
 import { useGesture } from './useGesture';
 import { State } from '../../State';
 import { InteractionBuilder, GestureType, HandlerCallbacks } from './gesture';
@@ -19,7 +19,9 @@ export function useAnimatedGesture(gesture: InteractionBuilder | GestureType) {
   }
 
   const preparedGesture = useGesture(gesture);
-  const sharedHandlersCallbacks = useSharedValue<
+  if (!Reanimated) return preparedGesture;
+
+  const sharedHandlersCallbacks = Reanimated.useSharedValue<
     HandlerCallbacks<Record<string, unknown>>[] | null
   >(null);
 
@@ -92,7 +94,7 @@ export function useAnimatedGesture(gesture: InteractionBuilder | GestureType) {
     }
   };
 
-  const event = useEvent(
+  const event = Reanimated.useEvent(
     callback,
     ['onGestureHandlerStateChange', 'onGestureHandlerEvent'],
     true

@@ -21,6 +21,7 @@ import {
 import { longPressGestureHandlerProps } from '../LongPressGestureHandler';
 import { forceTouchGestureHandlerProps } from '../ForceTouchGestureHandler';
 import { flingGestureHandlerProps } from '../FlingGestureHandler';
+import { SharedValue } from './reanimatedWrapper';
 
 const ALLOWED_PROPS = [
   ...baseGestureHandlerWithMonitorProps,
@@ -35,8 +36,10 @@ const ALLOWED_PROPS = [
 export type GestureConfigReference = {
   config: GestureType[];
   callback: null | (() => void);
-  animatedEventHandler: any;
-  animatedHandlers: any;
+  animatedEventHandler: unknown;
+  animatedHandlers: SharedValue<
+    HandlerCallbacks<Record<string, unknown>>[] | null
+  > | null;
   firstExecution: boolean;
 };
 

@@ -4,7 +4,7 @@ import { GestureConfigReference } from './useGesture';
 import { default as RNRenderer } from 'react-native/Libraries/Renderer/shims/ReactNative';
 import RNGestureHandlerModule from '../../RNGestureHandlerModule';
 import { startListening } from './eventReceiver';
-import { Reanimated } from './reanimatedImport';
+import { Reanimated } from './reanimatedWrapper';
 
 startListening();
 

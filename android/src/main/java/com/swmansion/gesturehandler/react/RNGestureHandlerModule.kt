@@ -282,6 +282,13 @@ class RNGestureHandlerModule(reactContext: ReactApplicationContext?) : ReactCont
       return RotationGestureHandler()
     }
 
+    override fun configure(handler: RotationGestureHandler, config: ReadableMap) {
+      super.configure(handler, config)
+      if (config.hasKey(KEY_END_ON_FINGER_RELEASE)) {
+        handler.endOnFingerRelease = config.getBoolean(KEY_END_ON_FINGER_RELEASE)
+      }
+    }
+
     override fun extractEventData(handler: RotationGestureHandler, eventData: WritableMap) {
       super.extractEventData(handler, eventData)
       with(eventData) {
@@ -529,6 +536,7 @@ class RNGestureHandlerModule(reactContext: ReactApplicationContext?) : ReactCont
     private const val KEY_HIT_SLOP_HORIZONTAL = "horizontal"
     private const val KEY_HIT_SLOP_WIDTH = "width"
     private const val KEY_HIT_SLOP_HEIGHT = "height"
+    private const val KEY_END_ON_FINGER_RELEASE = "endOnFingerRelease"
     private const val KEY_NATIVE_VIEW_SHOULD_ACTIVATE_ON_START = "shouldActivateOnStart"
     private const val KEY_NATIVE_VIEW_DISALLOW_INTERRUPTION = "disallowInterruption"
     private const val KEY_TAP_NUMBER_OF_TAPS = "numberOfTaps"

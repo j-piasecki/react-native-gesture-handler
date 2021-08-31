@@ -3,7 +3,10 @@ package com.swmansion.gesturehandler
 import android.view.MotionEvent
 import kotlin.math.atan2
 
-class RotationGestureDetector(private val gestureListener: OnRotationGestureListener?) {
+class RotationGestureDetector(
+  private val gestureListener: OnRotationGestureListener?,
+  private val finishOnFingerRelease: Boolean = true
+) {
   interface OnRotationGestureListener {
     fun onRotation(detector: RotationGestureDetector): Boolean
     fun onRotationBegin(detector: RotationGestureDetector): Boolean
@@ -53,6 +56,20 @@ class RotationGestureDetector(private val gestureListener: OnRotationGestureList
   private val pointerIds = IntArray(2)
 
   private fun updateCurrent(event: MotionEvent) {
+    if (pointerIds[0] == MotionEvent.INVALID_POINTER_ID) {
+      rotation = 0.0
+      val pointerIndex = event.findPointerIndex(pointerIds[1])
+      anchorX = event.getX(pointerIndex)
+      anchorY = event.getY(pointerIndex)
+      return
+    } else if (pointerIds[1] == MotionEvent.INVALID_POINTER_ID) {
+      rotation = 0.0
+      val pointerIndex = event.findPointerIndex(pointerIds[0])
+      anchorX = event.getX(pointerIndex)
+      anchorY = event.getY(pointerIndex)
+      return
+    }
+
     previousTime = currentTime
     currentTime = event.eventTime
     val firstPointerIndex = event.findPointerIndex(pointerIds[0])
@@ -106,6 +123,14 @@ class RotationGestureDetector(private val gestureListener: OnRotationGestureList
         previousAngle = Double.NaN
         updateCurrent(event)
         gestureListener?.onRotationBegin(this)
+      } else {
+        previousTime = event.eventTime
+        if (pointerIds[0] == MotionEvent.INVALID_POINTER_ID) {
+          pointerIds[0] = event.getPointerId(event.actionIndex)
+        } else if (pointerIds[1] == MotionEvent.INVALID_POINTER_ID) {
+          pointerIds[1] = event.getPointerId(event.actionIndex)
+        }
+        updateCurrent(event)
       }
       MotionEvent.ACTION_MOVE -> if (isInProgress) {
         updateCurrent(event)
@@ -114,8 +139,18 @@ class RotationGestureDetector(private val gestureListener: OnRotationGestureList
       MotionEvent.ACTION_POINTER_UP -> if (isInProgress) {
         val pointerId = event.getPointerId(event.actionIndex)
         if (pointerId == pointerIds[0] || pointerId == pointerIds[1]) {
-          // One of the key pointer has been lifted up, we have to end the gesture
-          finish()
+          // One of the key pointer has been lifted up
+          if (finishOnFingerRelease) {
+            // we have to end the gesture
+            finish()
+          } else {
+            // we have to clear the pointer entry in array
+            if (pointerId == pointerIds[0]) {
+              pointerIds[0] = MotionEvent.INVALID_POINTER_ID
+            } else {
+              pointerIds[1] = MotionEvent.INVALID_POINTER_ID
+            }
+          }
         }
       }
       MotionEvent.ACTION_UP -> finish()

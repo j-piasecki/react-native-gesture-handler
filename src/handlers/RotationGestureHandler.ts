@@ -4,6 +4,8 @@ import {
   baseGestureHandlerProps,
 } from './gestureHandlerCommon';
 
+export const rotationGestureHandlerProps = ['endOnFingerRelease'] as const;
+
 export type RotationGestureHandlerEventPayload = {
   /**
    * Amount rotated, expressed in radians, from the gesture's focal point
@@ -32,7 +34,9 @@ export type RotationGestureHandlerEventPayload = {
 };
 
 export interface RotationGestureHandlerProps
-  extends BaseGestureHandlerProps<RotationGestureHandlerEventPayload> {}
+  extends BaseGestureHandlerProps<RotationGestureHandlerEventPayload> {
+  endOnFingerRelease?: boolean;
+}
 
 export type RotationGestureHandler = typeof RotationGestureHandler;
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- backward compatibility; see description on the top of gestureHandlerCommon.ts file
@@ -41,6 +45,6 @@ export const RotationGestureHandler = createHandler<
   RotationGestureHandlerEventPayload
 >({
   name: 'RotationGestureHandler',
-  allowedProps: baseGestureHandlerProps,
+  allowedProps: [...baseGestureHandlerProps, ...rotationGestureHandlerProps],
   config: {},
 });

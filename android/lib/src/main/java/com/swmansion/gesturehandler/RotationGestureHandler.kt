@@ -5,6 +5,8 @@ import com.swmansion.gesturehandler.RotationGestureDetector.OnRotationGestureLis
 import kotlin.math.abs
 
 class RotationGestureHandler : GestureHandler<RotationGestureHandler>() {
+  var endOnFingerRelease = false
+
   private var rotationGestureDetector: RotationGestureDetector? = null
   var rotation = 0.0
     private set
@@ -37,15 +39,19 @@ class RotationGestureHandler : GestureHandler<RotationGestureHandler>() {
     override fun onRotationBegin(detector: RotationGestureDetector) = true
 
     override fun onRotationEnd(detector: RotationGestureDetector) {
-      end()
+      if (state == STATE_ACTIVE) {
+        end()
+      } else {
+        fail()
+      }
     }
   }
 
   override fun onHandle(event: MotionEvent) {
-    if (state == STATE_UNDETERMINED) {
+    if (state == STATE_UNDETERMINED && event.pointerCount >= 2) {
       velocity = 0.0
       rotation = 0.0
-      rotationGestureDetector = RotationGestureDetector(gestureListener)
+      rotationGestureDetector = RotationGestureDetector(gestureListener, endOnFingerRelease)
       begin()
     }
     rotationGestureDetector?.onTouchEvent(event)

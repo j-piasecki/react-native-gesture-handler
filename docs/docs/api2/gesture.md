@@ -33,3 +33,15 @@ Creates a new instance of [`RotationGesture`](./rotation-gesture.md) with its de
 ### Gesture.ForceTouch(): [ForceTouchGesture](./force-touch-gesture.md)
 
 Creates a new instance of [`ForceTouchGesture`](./force-touch-gesture.md) with its default config and no callbacks.
+
+### Gesture.Race(gesture1, gesture2, gesture3, ...): ComposedGesture
+
+Creates a gesture composed of those provided as arguments. Only one of those can become active and there are no restrictions to the activation of the gesture. The first one to activate will cancel all the others.
+
+### Gesture.Simultaneous(gesture1, gesture2, gesture3, ...): ComposedGesture
+
+Creates a gesture composed of those provided as arguments. All of them can become active without cancelling the others.
+
+### Gesture.Exclusive(first, second): ComposedGesture
+
+Creates a gesture composed of those provided as arguments. Only one of them can become active, but the first one has higher priority. When both gestures are in the `BEGAN` state and the activation criteria for the second one is met, instead of activating it will wait until the first one fails (and only then it will activate) or until the first one activates (and then the second one will get cancelled). It is useful when you want to compose gestures with similar activation criteria (e.g. single and double tap at the same component, without Exclusive the single tap would activate every time user taps thus cancelling the double tap).

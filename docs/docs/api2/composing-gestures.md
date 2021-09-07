@@ -13,6 +13,8 @@ It is the equivalent to having more than one gesture handler without defining `s
 
 For example, lets say that you have a component that you want to make draggable but you also want to show additional options on long press. Presumably you would not want the component to move after the long press activates. You can accomplish this using `Race`:
 
+> Note: the `useSharedValue` and `useAnimatedStyle` are part of [`react-native-reanimated`](https://docs.swmansion.com/react-native-reanimated/).
+
 ```js
 const offset = useSharedValue({ x: 0, y: 0 });
 const start = useSharedValue({ x: 0, y: 0 });
@@ -79,6 +81,8 @@ It accepts 2 arguments and both of the provided gestures can activate at the sam
 It is the equivalent to having two gesture handlers, each with `simultaneousHandlers` prop set to the other handler.
 
 For example, if you want to make a gallery app, you might want user to be able to zoom, rotate and pan around photos. You can do it with `Simultaneous`:
+
+> Note: the `useSharedValue` and `useAnimatedStyle` are part of [`react-native-reanimated`](https://docs.swmansion.com/react-native-reanimated/).
 
 ```js
 const offset = useSharedValue({ x: 0, y: 0 });
@@ -156,6 +160,8 @@ It accepts 2 arguments and only one of them can become active, with the first on
 It is equivalent to having two gesture handlers where the second one has the `waitFor` prop set to the other handler.
 
 For example, if you want to make a component that responds to single tap as well as to a double tap, you can accomplish that using `Exclusive`:
+
+> Note: the `useSharedValue` and `useAnimatedStyle` are part of [`react-native-reanimated`](https://docs.swmansion.com/react-native-reanimated/).
 
 ```js
 const singleTap = Gesture.Tap().onEnd((_event, success) => {

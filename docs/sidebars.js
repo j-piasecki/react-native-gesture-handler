@@ -41,7 +41,7 @@ module.exports = {
           'api2/pinch-gesture',
           'api2/rotation-gesture',
           'api2/force-touch-gesture',
-          'api2/new-api-native-view-gh',
+          'api2/native-gesture',
         ],
       },
     ],

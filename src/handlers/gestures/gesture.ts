@@ -1,24 +1,46 @@
 import RNGestureHandlerModule from '../../RNGestureHandlerModule';
-import { FlingGestureHandlerEventPayload } from '../FlingGestureHandler';
-import { ForceTouchGestureHandlerEventPayload } from '../ForceTouchGestureHandler';
+import {
+  FlingGestureHandlerEventPayload,
+  flingGestureHandlerProps,
+} from '../FlingGestureHandler';
+import {
+  ForceTouchGestureHandlerEventPayload,
+  forceTouchGestureHandlerProps,
+} from '../ForceTouchGestureHandler';
 import {
   HitSlop,
   CommonGestureConfig,
   UnwrappedGestureHandlerStateChangeEvent,
   UnwrappedGestureHandlerEvent,
   filterConfig,
+  baseGestureHandlerWithMonitorProps,
 } from '../gestureHandlerCommon';
 import { findHandler, getNextHandlerTag } from '../handlersRegistry';
-import { LongPressGestureHandlerEventPayload } from '../LongPressGestureHandler';
-import { PanGestureHandlerEventPayload } from '../PanGestureHandler';
+import {
+  LongPressGestureHandlerEventPayload,
+  longPressGestureHandlerProps,
+} from '../LongPressGestureHandler';
+import {
+  panGestureHandlerCustomNativeProps,
+  PanGestureHandlerEventPayload,
+  panGestureHandlerProps,
+} from '../PanGestureHandler';
 import { PinchGestureHandlerEventPayload } from '../PinchGestureHandler';
 import { RotationGestureHandlerEventPayload } from '../RotationGestureHandler';
-import { TapGestureHandlerEventPayload } from '../TapGestureHandler';
 import {
-  ALLOWED_PROPS,
-  convertToHandlerTag,
-  extractValidHandlerTags,
-} from './GestureDetector';
+  TapGestureHandlerEventPayload,
+  tapGestureHandlerProps,
+} from '../TapGestureHandler';
+
+export const ALLOWED_PROPS = [
+  ...baseGestureHandlerWithMonitorProps,
+  ...tapGestureHandlerProps,
+  ...panGestureHandlerProps,
+  ...panGestureHandlerCustomNativeProps,
+  ...longPressGestureHandlerProps,
+  ...forceTouchGestureHandlerProps,
+  ...flingGestureHandlerProps,
+];
 
 export type GestureType =
   | BaseGesture<Record<string, unknown>>
@@ -61,6 +83,22 @@ export const CALLBACK_TYPE = {
   UPDATE: 3,
   END: 4,
 } as const;
+
+function convertToHandlerTag(ref: GestureRef): number {
+  if (typeof ref === 'number') {
+    return ref;
+  } else if (ref instanceof BaseGesture) {
+    return ref.handlerTag;
+  } else {
+    return ref.current?.handlerTag ?? -1;
+  }
+}
+
+function extractValidHandlerTags(interactionGroup: GestureRef[] | undefined) {
+  return (
+    interactionGroup?.map(convertToHandlerTag)?.filter((tag) => tag > 0) ?? []
+  );
+}
 
 // Allow using CALLBACK_TYPE as object and type
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -163,7 +201,7 @@ export abstract class BaseGesture<
           this.config.simultaneousWith
         );
       }
-      console.log(simultaneousWith);
+
       RNGestureHandlerModule.updateGestureHandler(
         this.handlerTag,
         filterConfig(this.config, ALLOWED_PROPS, {

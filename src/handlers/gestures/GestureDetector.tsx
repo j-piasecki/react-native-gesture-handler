@@ -2,40 +2,20 @@ import React, { useEffect, useRef } from 'react';
 import {
   GestureType,
   HandlerCallbacks,
-  BaseGesture,
-  GestureRef,
   CALLBACK_TYPE,
+  ALLOWED_PROPS,
 } from './gesture';
 import { Reanimated, SharedValue } from './reanimatedWrapper';
 import { registerHandler, unregisterHandler } from '../handlersRegistry';
 import RNGestureHandlerModule from '../../RNGestureHandlerModule';
 import {
-  baseGestureHandlerWithMonitorProps,
   filterConfig,
   findNodeHandle,
   UnwrappedGestureHandlerEvent,
   UnwrappedGestureHandlerStateChangeEvent,
 } from '../gestureHandlerCommon';
-import { flingGestureHandlerProps } from '../FlingGestureHandler';
-import { forceTouchGestureHandlerProps } from '../ForceTouchGestureHandler';
-import { longPressGestureHandlerProps } from '../LongPressGestureHandler';
-import {
-  panGestureHandlerProps,
-  panGestureHandlerCustomNativeProps,
-} from '../PanGestureHandler';
-import { tapGestureHandlerProps } from '../TapGestureHandler';
 import { State } from '../../State';
 import { ComposedGesture } from './gestureComposition';
-
-export const ALLOWED_PROPS = [
-  ...baseGestureHandlerWithMonitorProps,
-  ...tapGestureHandlerProps,
-  ...panGestureHandlerProps,
-  ...panGestureHandlerCustomNativeProps,
-  ...longPressGestureHandlerProps,
-  ...forceTouchGestureHandlerProps,
-  ...flingGestureHandlerProps,
-];
 
 export type GestureConfigReference = {
   config: GestureType[];
@@ -46,24 +26,6 @@ export type GestureConfigReference = {
   firstExecution: boolean;
   useAnimated: boolean;
 };
-
-export function convertToHandlerTag(ref: GestureRef): number {
-  if (typeof ref === 'number') {
-    return ref;
-  } else if (ref instanceof BaseGesture) {
-    return ref.handlerTag;
-  } else {
-    return ref.current?.handlerTag ?? -1;
-  }
-}
-
-export function extractValidHandlerTags(
-  interactionGroup: GestureRef[] | undefined
-) {
-  return (
-    interactionGroup?.map(convertToHandlerTag)?.filter((tag) => tag > 0) ?? []
-  );
-}
 
 function dropHandlers(preparedGesture: GestureConfigReference) {
   for (const handler of preparedGesture.config) {

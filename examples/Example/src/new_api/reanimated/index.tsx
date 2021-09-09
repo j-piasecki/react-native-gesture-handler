@@ -1,19 +1,13 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import {
-  GestureDetector,
-  Gesture,
-  useGesture,
-} from 'react-native-gesture-handler';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-  runOnJS,
 } from 'react-native-reanimated';
 
 function Ball() {
-  console.log('render');
   const isPressed = useSharedValue(false);
   const offset = useSharedValue({ x: 0, y: 0 });
 
@@ -29,14 +23,8 @@ function Ball() {
   });
 
   const start = useSharedValue({ x: 0, y: 0 });
-  const gesture = useGesture(Gesture.Pan());
-
-  function reset(offset) {
-    gesture.activeOffsetX(offset);
-  }
-
-  gesture
-    .onStart(() => {
+  const gesture = Gesture.Pan()
+    .onBegan(() => {
       'worklet';
       isPressed.value = true;
     })
@@ -54,18 +42,10 @@ function Ball() {
         y: offset.value.y,
       };
       isPressed.value = false;
-
-      runOnJS(reset)([-100, 100]);
     });
 
-  const longPress = Gesture.LongPress().onStart(() => {
-    'worklet';
-    isPressed.value = true;
-    runOnJS(reset)([undefined, undefined]);
-  });
-
   return (
-    <GestureDetector animatedGesture={Gesture.Simultaneous(longPress, gesture)}>
+    <GestureDetector animatedGesture={gesture}>
       <Animated.View style={[styles.ball, animatedStyles]} />
     </GestureDetector>
   );

@@ -118,7 +118,7 @@ export type {
   RectButtonProperties,
   BorderlessButtonProperties,
 } from './handlers/gestureHandlerTypesCompat';
-
+export { default as useGesture } from './handlers/gestures/useGesture';
 export { default as Swipeable } from './components/Swipeable';
 export type {
   DrawerLayoutProps,

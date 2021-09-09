@@ -22,6 +22,7 @@ export class PanGesture extends ContinousBaseGesture<PanGestureHandlerEventPaylo
     } else {
       this.config.activeOffsetYEnd = offset;
     }
+    this.updateConfig();
     return this;
   }
 
@@ -34,6 +35,7 @@ export class PanGesture extends ContinousBaseGesture<PanGestureHandlerEventPaylo
     } else {
       this.config.activeOffsetXEnd = offset;
     }
+    this.updateConfig();
     return this;
   }
 
@@ -46,6 +48,7 @@ export class PanGesture extends ContinousBaseGesture<PanGestureHandlerEventPaylo
     } else {
       this.config.failOffsetYEnd = offset;
     }
+    this.updateConfig();
     return this;
   }
 
@@ -58,26 +61,31 @@ export class PanGesture extends ContinousBaseGesture<PanGestureHandlerEventPaylo
     } else {
       this.config.failOffsetXEnd = offset;
     }
+    this.updateConfig();
     return this;
   }
 
   minPointers(minPointers: number) {
     this.config.minPointers = minPointers;
+    this.updateConfig();
     return this;
   }
 
   minDistance(distance: number) {
     this.config.minDist = distance;
+    this.updateConfig();
     return this;
   }
 
   averageTouches(value: boolean) {
     this.config.avgTouches = value;
+    this.updateConfig();
     return this;
   }
 
   enableTrackpadTwoFingerGesture(value: boolean) {
     this.config.enableTrackpadTwoFingerGesture = value;
+    this.updateConfig();
     return this;
   }
 }

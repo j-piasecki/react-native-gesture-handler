@@ -1,6 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 import { StyleSheet, View } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import {
+  GestureDetector,
+  Gesture,
+  useGesture,
+} from 'react-native-gesture-handler';
+import {
+  runOnJS,
+  useAnimatedProps,
+  useAnimatedReaction,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 function Box(props: {
   color: string;
@@ -14,7 +26,7 @@ function Box(props: {
   });
 
   return (
-    <GestureDetector gesture={gesture}>
+    <GestureDetector>
       <View
         style={[
           styles.box,
@@ -28,12 +40,43 @@ function Box(props: {
 }
 
 export default function Example() {
+  const a = useSharedValue(0);
+  const [state, setState] = useState(0);
+
+  const tap = useGesture(Gesture.Tap()).onStart((e, s) => {
+    a.value = withTiming(a.value + 1, { duration: 2000 });
+    console.log('tap');
+    tap.onStart(() => {
+      console.log('no more taps');
+    });
+  });
+
+  const updateHandler = (a) => {
+    tap.enabled(a);
+  };
+
+  const b = useAnimatedReaction(
+    () => {
+      return a.value === Math.floor(a.value);
+    },
+    (res, prev) => {
+      if (res !== prev) {
+        runOnJS(updateHandler)(res);
+        console.log(res);
+      }
+    }
+  );
+  console.log('render ' + state);
+  const longpress = Gesture.LongPress().onStart(() => setState(state + 1));
+
   return (
-    <View style={styles.home}>
-      <Box color="red">
-        <Box color="green" overlap />
-      </Box>
-    </View>
+    <GestureDetector gesture={Gesture.Simultaneous(tap, longpress)}>
+      <View style={styles.home}>
+        <Box color="red">
+          <Box color="green" overlap />
+        </Box>
+      </View>
+    </GestureDetector>
   );
 }
 

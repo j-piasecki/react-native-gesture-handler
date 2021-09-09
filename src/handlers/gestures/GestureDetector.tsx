@@ -27,7 +27,7 @@ import { tapGestureHandlerProps } from '../TapGestureHandler';
 import { State } from '../../State';
 import { ComposedGesture } from './gestureComposition';
 
-const ALLOWED_PROPS = [
+export const ALLOWED_PROPS = [
   ...baseGestureHandlerWithMonitorProps,
   ...tapGestureHandlerProps,
   ...panGestureHandlerProps,
@@ -47,7 +47,7 @@ export type GestureConfigReference = {
   useAnimated: boolean;
 };
 
-function convertToHandlerTag(ref: GestureRef): number {
+export function convertToHandlerTag(ref: GestureRef): number {
   if (typeof ref === 'number') {
     return ref;
   } else if (ref instanceof BaseGesture) {
@@ -57,7 +57,9 @@ function convertToHandlerTag(ref: GestureRef): number {
   }
 }
 
-function extractValidHandlerTags(interactionGroup: GestureRef[] | undefined) {
+export function extractValidHandlerTags(
+  interactionGroup: GestureRef[] | undefined
+) {
   return (
     interactionGroup?.map(convertToHandlerTag)?.filter((tag) => tag > 0) ?? []
   );
@@ -110,25 +112,7 @@ function attachHandlers({
     // use setImmediate to extract handlerTags, because all refs should be initialized
     // when it's ran
     setImmediate(() => {
-      let requireToFail: number[] = [];
-      if (handler.config.requireToFail) {
-        requireToFail = extractValidHandlerTags(handler.config.requireToFail);
-      }
-
-      let simultaneousWith: number[] = [];
-      if (handler.config.simultaneousWith) {
-        simultaneousWith = extractValidHandlerTags(
-          handler.config.simultaneousWith
-        );
-      }
-
-      RNGestureHandlerModule.updateGestureHandler(
-        handler.handlerTag,
-        filterConfig(handler.config, ALLOWED_PROPS, {
-          simultaneousHandlers: simultaneousWith,
-          waitFor: requireToFail,
-        })
-      );
+      handler.updateConfig();
     });
   }
   preparedGesture.config = gesture;
@@ -173,21 +157,7 @@ function updateHandlers(
       handler.handlers = gesture[i].handlers;
       handler.handlers.handlerTag = handler.handlerTag;
 
-      const requireToFail = extractValidHandlerTags(
-        handler.config.requireToFail
-      );
-
-      const simultaneousWith = extractValidHandlerTags(
-        handler.config.simultaneousWith
-      );
-
-      RNGestureHandlerModule.updateGestureHandler(
-        handler.handlerTag,
-        filterConfig(handler.config, ALLOWED_PROPS, {
-          simultaneousHandlers: simultaneousWith,
-          waitFor: requireToFail,
-        })
-      );
+      handler.updateConfig();
 
       registerHandler(handler.handlerTag, handler);
     }

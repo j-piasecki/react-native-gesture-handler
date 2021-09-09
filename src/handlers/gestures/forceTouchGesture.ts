@@ -15,16 +15,19 @@ export class ForceTouchGesture extends ContinousBaseGesture<ForceTouchGestureHan
 
   setMinForce(force: number) {
     this.config.minForce = force;
+    this.updateConfig();
     return this;
   }
 
   maxForce(force: number) {
     this.config.maxForce = force;
+    this.updateConfig();
     return this;
   }
 
   feedbackOnActivation(value: boolean) {
     this.config.feedbackOnActivation = value;
+    this.updateConfig();
     return this;
   }
 }

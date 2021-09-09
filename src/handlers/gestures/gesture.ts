@@ -1,3 +1,4 @@
+import RNGestureHandlerModule from '../../RNGestureHandlerModule';
 import { FlingGestureHandlerEventPayload } from '../FlingGestureHandler';
 import { ForceTouchGestureHandlerEventPayload } from '../ForceTouchGestureHandler';
 import {
@@ -5,13 +6,19 @@ import {
   CommonGestureConfig,
   UnwrappedGestureHandlerStateChangeEvent,
   UnwrappedGestureHandlerEvent,
+  filterConfig,
 } from '../gestureHandlerCommon';
-import { getNextHandlerTag } from '../handlersRegistry';
+import { findHandler, getNextHandlerTag } from '../handlersRegistry';
 import { LongPressGestureHandlerEventPayload } from '../LongPressGestureHandler';
 import { PanGestureHandlerEventPayload } from '../PanGestureHandler';
 import { PinchGestureHandlerEventPayload } from '../PinchGestureHandler';
 import { RotationGestureHandlerEventPayload } from '../RotationGestureHandler';
 import { TapGestureHandlerEventPayload } from '../TapGestureHandler';
+import {
+  ALLOWED_PROPS,
+  convertToHandlerTag,
+  extractValidHandlerTags,
+} from './GestureDetector';
 
 export type GestureType =
   | BaseGesture<Record<string, unknown>>
@@ -116,6 +123,57 @@ export abstract class BaseGesture<
     return callback.__workletHash !== undefined;
   }
 
+  private removeDuplicatedRelations() {
+    let mappedTags =
+      this.config.simultaneousWith?.map(convertToHandlerTag) ?? [];
+
+    this.config.simultaneousWith = this.config.simultaneousWith?.filter(
+      (_handler, index) => {
+        return (
+          mappedTags[index] > 0 &&
+          mappedTags.indexOf(mappedTags[index]) === index
+        );
+      }
+    );
+
+    mappedTags = this.config.requireToFail?.map(convertToHandlerTag) ?? [];
+
+    this.config.requireToFail = this.config.requireToFail?.filter(
+      (_handler, index) => {
+        return (
+          mappedTags[index] > 0 &&
+          mappedTags.indexOf(mappedTags[index]) === index
+        );
+      }
+    );
+  }
+
+  updateConfig() {
+    if (findHandler(this.handlerTag) != null) {
+      this.removeDuplicatedRelations();
+
+      let requireToFail: number[] = [];
+      if (this.config.requireToFail) {
+        requireToFail = extractValidHandlerTags(this.config.requireToFail);
+      }
+
+      let simultaneousWith: number[] = [];
+      if (this.config.simultaneousWith) {
+        simultaneousWith = extractValidHandlerTags(
+          this.config.simultaneousWith
+        );
+      }
+      console.log(simultaneousWith);
+      RNGestureHandlerModule.updateGestureHandler(
+        this.handlerTag,
+        filterConfig(this.config, ALLOWED_PROPS, {
+          simultaneousHandlers: simultaneousWith,
+          waitFor: requireToFail,
+        })
+      );
+    }
+  }
+
   onBegan(
     callback: (
       event: UnwrappedGestureHandlerStateChangeEvent<EventPayloadT>
@@ -150,26 +208,31 @@ export abstract class BaseGesture<
 
   enabled(enabled: boolean) {
     this.config.enabled = enabled;
+    this.updateConfig();
     return this;
   }
 
   shouldCancelWhenOutside(value: boolean) {
     this.config.shouldCancelWhenOutside = value;
+    this.updateConfig();
     return this;
   }
 
   hitSlop(hitSlop: HitSlop) {
     this.config.hitSlop = hitSlop;
+    this.updateConfig();
     return this;
   }
 
   simultaneousWithExternalGesture(gesture: Exclude<GestureRef, number>) {
     this.addDependency('simultaneousWith', gesture);
+    this.updateConfig();
     return this;
   }
 
   requireExternalGestureToFail(gesture: Exclude<GestureRef, number>) {
     this.addDependency('requireToFail', gesture);
+    this.updateConfig();
     return this;
   }
 

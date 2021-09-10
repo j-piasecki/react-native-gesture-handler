@@ -14,6 +14,7 @@ module.exports = {
           'api2/under-the-hood',
           'api2/composing-gestures',
           'api2/interoperability-gh',
+          'api2/edge-cases',
         ]
       },
       {

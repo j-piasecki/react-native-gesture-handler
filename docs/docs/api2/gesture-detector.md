@@ -4,7 +4,7 @@ title: GestureDetector
 sidebar_label: Gesture detector
 ---
 
-`GestureDetector` is the main component of the RNGH2. It is responsible for creating and updating native gesture handlers based on the config of provided gesture. The most significant difference between it and old gesture handlers is that the `GestureDetector` can recognize more than one gesture at the time. Keep in mind that `GestureDetector` is not compatible with the [Animated API](https://reactnative.dev/docs/animated) nor with [Reanimated 1](https://docs.swmansion.com/react-native-reanimated/docs/1.x.x/).
+`GestureDetector` is the main component of the RNGH2. It is responsible for creating and updating native gesture handlers based on the config of provided gesture. The most significant difference between it and old gesture handlers is that the `GestureDetector` can recognize more than one gesture at the time thanks to [gesture composition](composing-gestures). Keep in mind that `GestureDetector` is not compatible with the [Animated API](https://reactnative.dev/docs/animated), nor with [Reanimated 1](https://docs.swmansion.com/react-native-reanimated/docs/1.x.x/).
 
 ## Properties
 

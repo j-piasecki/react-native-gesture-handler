@@ -6,6 +6,15 @@ sidebar_label: Gesture
 
 `Gesture` is the object that allows you to create and compose gestures.
 
+:::tip
+You can the destructuring assignment to extract the methods you use and avoid prefixing them with `Gesture`:
+
+```js
+const { Tap, Pan, Exclusive } = Gesture;
+```
+
+:::
+
 ### Gesture.Tap(): [TapGesture](./tap-gesture.md)
 
 Creates a new instance of [`TapGesture`](./tap-gesture.md) with its default config and no callbacks.

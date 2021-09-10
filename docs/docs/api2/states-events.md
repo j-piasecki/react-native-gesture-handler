@@ -9,27 +9,28 @@ At any given time, each handler instance has an assigned state that can change w
 
 A gesture can be in one of the six possible states:
 
-- #### UNDETERMINED
+- #### UNDETERMINED `state = 0`
 
   This is the initial state of each gesture recognizer and it goes into this state after it's done recognizing a gesture.
 
-- #### FAILED
+- #### FAILED `state = 1`
 
   A gesture recognizer received some touches but for some reason didn't recognize them. For example, if a finger travels more distance than a defined `maxDist` property allows, then the gesture won't become active but will fail instead. Afterwards, it's state will be reset to `UNDETERMINED`.
 
-- #### BEGAN
+- #### BEGAN `state = 2`
 
   Gesture recognizer has started receiving touch stream but hasn't yet received enough data to either [fail](#failed) or [activate](#active).
 
-- #### CANCELLED
+- #### CANCELLED `state = 3`
 
   The gesture recognizer has received a signal (possibly new touches or a command from the touch system controller) resulting in the cancellation of a continuous gesture. The gesture's state will become `CANCELLED` until it is finally reset to the initial state, `UNDETERMINED`.
 
-- #### ACTIVE
+- #### ACTIVE `state = 4`
 
   Recognizer has recognized a gesture. It will become and stay in the `ACTIVE` state until the gesture finishes (e.g. when user lifts the finger) or gets cancelled by the touch system. Under normal circumstances the state will then turn into `END`. In the case that a gesture is cancelled by the touch system, its state would then become `CANCELLED`.
 
-- #### END
+- #### END `state = 5`
+
   The gesture recognizer has received touches signalling the end of a gesture. Its state will become `END` until it is reset to `UNDETERMINED`.
 
 ## State flows

@@ -77,8 +77,8 @@ return (
 
 ## Simultaneous
 
-It accepts 2 arguments and both of the provided gestures can activate at the same time. Activation of one will not cancel the other.
-It is the equivalent to having two gesture handlers, each with `simultaneousHandlers` prop set to the other handler.
+All of the provided gestures can activate at the same time. Activation of one will not cancel the other.
+It is the equivalent to having some gesture handlers, each with `simultaneousHandlers` prop set to the other handlers.
 
 For example, if you want to make a gallery app, you might want user to be able to zoom, rotate and pan around photos. You can do it with `Simultaneous`:
 
@@ -156,8 +156,8 @@ return (
 
 ## Exclusive
 
-It accepts 2 arguments and only one of them can become active, with the first one having a higher priority than the second one (if both gestures are still possible, the second one will wait for the first one to fail before it activates).
-It is equivalent to having two gesture handlers where the second one has the `waitFor` prop set to the other handler.
+Only one of the provided gestures can become active, with the first one having a higher priority than the second one (if both gestures are still possible, the second one will wait for the first one to fail before it activates), second one having a higher priority than the third one, and so on.
+It is equivalent to having some gesture handlers where the second one has the `waitFor` prop set to the first handler, third one has the `waitFor` prop set to the first and the second one, and so on.
 
 For example, if you want to make a component that responds to single tap as well as to a double tap, you can accomplish that using `Exclusive`:
 

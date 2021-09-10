@@ -13,6 +13,7 @@ module.exports = {
           'api2/states-events',
           'api2/under-the-hood',
           'api2/composing-gestures',
+          'api2/interoperability-gh',
         ]
       },
       {

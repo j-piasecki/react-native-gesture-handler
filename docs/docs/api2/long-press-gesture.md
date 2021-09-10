@@ -54,6 +54,6 @@ Y coordinate, expressed in points, of the current position of the pointer (finge
 
 ### `duration`
 
-Duration of the long press (time since the start of the event), expressed in milliseconds.
+Duration of the long press (time since the start of the gesture), expressed in milliseconds.
 
 <BaseEventData />

@@ -1,32 +1,4 @@
----
-id: common-gesture
-title: Common gesture methods
-sidebar_label: Common gesture methods
----
-
-All gesture objects extend the `BaseGesture` class, therefore they share some of the methods and properties.
-
-## Callbacks
-
-### `onBegan(callback)`
-
-Set the [`onBegan`](./events.md#onbegan) callback.
-
-### `onStart(callback)`
-
-Set the [`onStart`](./events.md#onstart) callback.
-
-### `onEnd(callback)`
-
-Set the [`onEnd`](./events.md#onend) callback.
-
-### `onUpdate(callback)`
-
-> Only available on continuous gestures: `Pan`, `Pinch`, `Rotation` and `ForceTouch`.
-
-Set the [`onUpdate`](./events.md#onupdate) callback.
-
-## Config
+#### Properties common to all gestures:
 
 ### `enabled(value: boolean)`
 
@@ -70,13 +42,3 @@ Adds a gesture that should be recognized simultaneously with this one.
 Adds a relation requiring another gesture to fail, before this one can activate.
 
 **IMPORTANT:** Note that this method only marks the relation between gestures, without [composing](./composing-gestures.md) them. [`GestureDetector`](./gesture-detector.md) will not recognize the `otherGesture` and it needs to be added to another detector in order to be recognized.
-
-## Event data
-
-### `state`
-
-Current [state](../state.md) of the handler. Expressed as one of the constants exported under `State` object by the library.
-
-### `numberOfPointers`
-
-Represents the number of pointers (fingers) currently placed on the screen.

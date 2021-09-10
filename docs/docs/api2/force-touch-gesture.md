@@ -4,18 +4,23 @@ title: Force touch gesture (iOS only)
 sidebar_label: Force touch gesture
 ---
 
+import BaseEventData from './base-gesture-event-data.md';
+import BaseEventConfig from './base-gesture-config.md';
+import BaseEventCallbacks from './base-gesture-callbacks.md';
+import BaseContinousEventCallbacks from './base-continous-gesture-callbacks.md';
+
 A continuous gesture that recognizes force of a touch. It allows for tracking pressure of touch on some iOS devices.
 The gesture [activates](../state.md#active) when pressure of touch if greater or equal than `minForce`. It fails if pressure is greater than `maxForce`
 Gesture callback can be used for continuous tracking of the touch pressure. It provides information for one finger (the first one).
 
 At the beginning of the gesture, the pressure factor is 0.0. As the pressure increases, the pressure factor increases proportionally. The maximum pressure is 1.0.
 
-The gesture is implemented using custom [UIGestureRecognizer](https://developer.apple.com/documentation/uikit/uigesturerecognizer) on iOS. There's no implementation provided on Android and it simply render children without any wrappers.
+The gesture is implemented using custom [UIGestureRecognizer](https://developer.apple.com/documentation/uikit/uigesturerecognizer) on iOS. There's no implementation provided on Android and it simply renders children without any wrappers.
 Since this behaviour is only provided on some iOS devices, this gesture should not be used for defining any crucial behaviors. Use it only as an additional improvement and make all features to be accessed without this gesture as well.
 
 ## Config
 
-See [set of properties common to all gestures](./common-gesture.md#config). Below is a list of properties specific to `ForceTouchGesture`:
+#### Properties specific to `ForceTouchGesture`:
 
 ### `minForce(value: number)`
 
@@ -29,10 +34,19 @@ A maximal pressure that could be applied for gesture. If the pressure is greater
 
 Value defining if haptic feedback has to be performed on activation.
 
+<BaseEventConfig />
+
+## Callbacks
+
+<BaseEventCallbacks />
+<BaseContinousEventCallbacks />
+
 ## Event data
 
-See [set of event attributes common to all gestures](./common-gesture.md#event-data). Below is a list of gesture event attributes specific to `ForceTouchGesture`:
+#### Event attributes specific to `ForceTouchGesture`:
 
 ### `force`
 
 The pressure of a touch.
+
+<BaseEventData />

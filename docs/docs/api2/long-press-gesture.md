@@ -4,6 +4,10 @@ title: Long press gesture
 sidebar_label: Long press gesture
 ---
 
+import BaseEventData from './base-gesture-event-data.md';
+import BaseEventConfig from './base-gesture-config.md';
+import BaseEventCallbacks from './base-gesture-callbacks.md';
+
 A discrete gesture that activates when the corresponding view is pressed for a sufficiently long time.
 This gesture's state will turn into [END](../state.md#end) immediately after the finger is released.
 The gesture will fail to recognize a touch event if the finger is lifted before the [minimum required time](#mindurationms) or if the finger is moved further than the [allowable distance](#maxdist).
@@ -12,7 +16,7 @@ The gesture is implemented using [UILongPressGestureRecognizer](https://develope
 
 ## Config
 
-See [set of properties common to all gestures](./common-gesture.md#config). Below is a list of properties specific to `LongPressGesture`:
+#### Properties specific to `LongPressGesture`:
 
 ### `minDurationMs(value: number)`
 
@@ -22,9 +26,15 @@ Minimum time, expressed in milliseconds, that a finger must remain pressed on th
 
 Maximum distance, expressed in points, that defines how far the finger is allowed to travel during a long press gesture. If the finger travels further than the defined distance and the gesture hasn't yet [activated](../state.md#active), it will fail to recognize the gesture. The default value is 10.
 
+<BaseEventConfig />
+
+## Callbacks
+
+<BaseEventCallbacks />
+
 ## Event data
 
-See [set of event attributes common to all gestures](./common-gesture.md#event-data). Below is a list of gesture event attributes specific to `LongPressGesture`:
+#### Event attributes specific to `LongPressGesture`:
 
 ### `x`
 
@@ -45,3 +55,5 @@ Y coordinate, expressed in points, of the current position of the pointer (finge
 ### `duration`
 
 Duration of the long press (time since the start of the event), expressed in milliseconds.
+
+<BaseEventData />

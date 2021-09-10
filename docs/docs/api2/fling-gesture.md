@@ -4,6 +4,10 @@ title: Fling gesture
 sidebar_label: Fling gesture
 ---
 
+import BaseEventData from './base-gesture-event-data.md';
+import BaseEventConfig from './base-gesture-config.md';
+import BaseEventCallbacks from './base-gesture-callbacks.md';
+
 A discrete gesture that activates when the movement is sufficiently long and fast.
 Gesture gets [ACTIVE](../state.md#active) when movement is sufficiently long and it does not take too much time.
 When gesture gets activated it will turn into [END](../state.md#end) state when finger is released.
@@ -12,7 +16,7 @@ The gesture is implemented using [UISwipeGestureRecognizer](https://developer.ap
 
 ## Config
 
-See [set of properties common to all gestures](./common-gesture.md#config). Below is a list of properties specific to `FlingGesture`:
+#### Properties specific to `FlingGesture`:
 
 ### `direction(value: Directions)`
 
@@ -32,9 +36,15 @@ fling.direction(Directions.DOWN);
 
 Determine exact number of points required to handle the fling gesture.
 
+<BaseEventConfig />
+
+## Callbacks
+
+<BaseEventCallbacks />
+
 ## Event data
 
-See [set of event attributes common to all gestures](./common-gesture.md#event-data). Below is a list of gesture event attributes specific to `FlingGesture`:
+#### Event attributes specific to `FlingGesture`:
 
 ### `x`
 
@@ -51,3 +61,5 @@ X coordinate of the current position of the pointer (finger or a leading pointer
 ### `absoluteY`
 
 Y coordinate of the current position of the pointer (finger or a leading pointer when there are multiple fingers placed) relative to the root view. The value is expressed in point units. It is recommended to use it instead of [`y`](#y) in cases when the original view can be transformed as an effect of the gesture.
+
+<BaseEventData />

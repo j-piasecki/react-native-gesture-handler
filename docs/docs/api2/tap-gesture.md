@@ -4,6 +4,10 @@ title: Tap gesture
 sidebar_label: Tap gesture
 ---
 
+import BaseEventData from './base-gesture-event-data.md';
+import BaseEventConfig from './base-gesture-config.md';
+import BaseEventCallbacks from './base-gesture-callbacks.md';
+
 A discrete gesture that recognizes one or many taps.
 
 Tap gestures detect one or more fingers briefly touching the screen.
@@ -11,11 +15,11 @@ The fingers involved in these gestures must not move significantly from their in
 The required number of taps and allowed distance from initial position may be configured.
 For example, you might configure tap gesture recognizers to detect single taps, double taps, or triple taps.
 
-In order for a gesture to [activate](../state.md#active), specified gesture requirements such as minPointers, numberOfTaps, maxDist, maxDurationMs, and maxDelayMs (explained below) must be met. Immediately after the gesture [activates](../state.md#active), it will [END](../state.md#end).
+In order for a gesture to [activate](../state.md#active), specified gesture requirements such as minPointers, numberOfTaps, maxDist, maxDurationMs, and maxDelayMs (explained below) must be met. Immediately after the gesture [activates](../state.md#active), it will [end](../state.md#end).
 
 ## Config
 
-See [set of properties common to all gestures](./common-gesture.md#config). Below is a list of properties specific to `TapGesture`:
+#### Properties specific to `TapGesture`:
 
 ### `minPointers(value: number)`
 
@@ -45,9 +49,15 @@ Maximum distance, expressed in points, that defines how far the finger is allowe
 
 Maximum distance, expressed in points, that defines how far the finger is allowed to travel during a tap gesture. If the finger travels further than the defined distance and the gesture hasn't yet [activated](../state.md#active), it will fail to recognize the gesture.
 
+<BaseEventConfig />
+
+## Callbacks
+
+<BaseEventCallbacks />
+
 ## Event data
 
-See [set of event attributes common to all gestures](./common-gesture.md#event-data). Below is a list of gesture event attributes specific to `TapGesture`:
+#### Event attributes specific to `TapGesture`:
 
 ### `x`
 
@@ -64,3 +74,5 @@ X coordinate, expressed in points, of the current position of the pointer (finge
 ### `absoluteY`
 
 Y coordinate, expressed in points, of the current position of the pointer (finger or a leading pointer when there are multiple fingers placed) relative to the root view. It is recommended to use `absoluteY` instead of [`y`](#y) in cases when the view attached to the [`GestureDetector`](./gesture-detector.md) can be transformed as an effect of the gesture.
+
+<BaseEventData />

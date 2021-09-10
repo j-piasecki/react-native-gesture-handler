@@ -4,6 +4,11 @@ title: Pinch gesture
 sidebar_label: Pinch gesture
 ---
 
+import BaseEventData from './base-gesture-event-data.md';
+import BaseEventConfig from './base-gesture-config.md';
+import BaseEventCallbacks from './base-gesture-callbacks.md';
+import BaseContinousEventCallbacks from './base-continous-gesture-callbacks.md';
+
 A continuous gesture that recognizes pinch gesture. It allows for tracking the distance between two fingers and use that information to scale or zoom your content.
 The gesture [activates](../state.md#active) when fingers are placed on the screen and change their position.
 Gesture callback can be used for continuous tracking of the pinch gesture. It provides information about velocity, anchor (focal) point of gesture and scale.
@@ -17,11 +22,16 @@ The gesture is implemented using [UIPinchGestureRecognizer](https://developer.ap
 
 ## Config
 
-Pinch gesture does not extend the [common gesture config](./common-gesture.md).
+<BaseEventConfig />
+
+## Callbacks
+
+<BaseEventCallbacks />
+<BaseContinousEventCallbacks />
 
 ## Event data
 
-See [set of event attributes common to all gestures](./common-gesture.md#event-data). Below is a list of gesture event attributes specific to `PinchGesture`:
+#### Event attributes specific to `PinchGesture`:
 
 ### `scale`
 
@@ -38,3 +48,5 @@ Position expressed in points along X axis of center anchor point of gesture
 ### `focalY`
 
 Position expressed in points along Y axis of center anchor point of gesture
+
+<BaseEventData />

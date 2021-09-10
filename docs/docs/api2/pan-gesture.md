@@ -4,6 +4,11 @@ title: Pan gesture
 sidebar_label: Pan gesture
 ---
 
+import BaseEventData from './base-gesture-event-data.md';
+import BaseEventConfig from './base-gesture-config.md';
+import BaseEventCallbacks from './base-gesture-callbacks.md';
+import BaseContinousEventCallbacks from './base-continous-gesture-callbacks.md';
+
 A continuous gesture that can recognize a panning (dragging) gesture and track its movement.
 
 The gesture [activates](../state.md#active) when a finger is placed on the screen and moved some initial distance.
@@ -32,7 +37,7 @@ If you wish to track the "center of mass" virtual pointer and account for its ch
 
 ## Config
 
-See [set of properties common to all gestures](./common-gesture.md#config). Below is a list of properties specific to `PanGesture`:
+#### Properties specific to `PanGesture`:
 
 ### `minDist(value: number)`
 
@@ -76,9 +81,16 @@ If only one number `p` is given a range of `(-inf, p)` will be used if `p` is hi
 
 Enables two-finger gestures on supported devices, for example iPads with trackpads. If not enabled the gesture will require click + drag, with enableTrackpadTwoFingerGesture swiping with two fingers will also trigger the gesture.
 
+<BaseEventConfig />
+
+## Callbacks
+
+<BaseEventCallbacks />
+<BaseContinousEventCallbacks />
+
 ## Event data
 
-See [set of event attributes common to all gestures](./common-gesture.md#event-data). Below is a list of gesture event attributes specific to `PanGesture`:
+#### Event attributes specific to `PanGesture`:
 
 ### `translationX`
 
@@ -111,3 +123,5 @@ X coordinate of the current position of the pointer (finger or a leading pointer
 ### `absoluteY`
 
 Y coordinate of the current position of the pointer (finger or a leading pointer when there are multiple fingers placed) relative to the root view. The value is expressed in point units. It is recommended to use it instead of [`y`](#y) in cases when the original view can be transformed as an effect of the gesture.
+
+<BaseEventData />

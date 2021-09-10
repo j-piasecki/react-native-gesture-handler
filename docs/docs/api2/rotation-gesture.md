@@ -4,6 +4,11 @@ title: Rotation gesture
 sidebar_label: Rotation gesture
 ---
 
+import BaseEventData from './base-gesture-event-data.md';
+import BaseEventConfig from './base-gesture-config.md';
+import BaseEventCallbacks from './base-gesture-callbacks.md';
+import BaseContinousEventCallbacks from './base-continous-gesture-callbacks.md';
+
 A continuous gesture that can recognize a rotation gesture and track its movement.
 
 The gesture [activates](./state.md#active) when fingers are placed on the screen and change position in a proper way.
@@ -14,11 +19,16 @@ The gesture is implemented using [UIRotationGestureRecognizer](https://developer
 
 ## Config
 
-Rotation gesture does not extend the [common gesture config](./common-gesture.md).
+<BaseEventConfig />
+
+## Callbacks
+
+<BaseEventCallbacks />
+<BaseContinousEventCallbacks />
 
 ## Event data
 
-See [set of event attributes common to all gestures](./common-gesture.md#event-data). Below is a list of gesture event attributes specific to `RotationGesture`:
+#### Event attributes specific to `RotationGesture`:
 
 ### `rotation`
 
@@ -35,3 +45,5 @@ X coordinate, expressed in points, of the gesture's central focal point (anchor)
 ### `anchorY`
 
 Y coordinate, expressed in points, of the gesture's central focal point (anchor).
+
+<BaseEventData />

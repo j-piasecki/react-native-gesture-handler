@@ -8,20 +8,33 @@ module.exports = {
       'example',
     ],
     RNGH2: [
-      'api2/quickstart/quickstart',
-      'api2/gesture',
-      'api2/events',
-      'api2/gesture-detector',
-      'api2/composing-gestures',
-      'api2/common-gesture',
-      'api2/tap-gesture',
-      'api2/pan-gesture',
-      'api2/long-press-gesture',
-      'api2/fling-gesture',
-      'api2/pinch-gesture',
-      'api2/rotation-gesture',
-      'api2/force-touch-gesture',
-      'api2/native-gesture',
+      {
+        'Introduction': [
+          'api2/states-events',
+          'api2/under-the-hood',
+          'api2/composing-gestures',
+        ]
+      },
+      {
+        'API reference': [
+          'api2/gesture',
+          'api2/gesture-detector',
+          'api2/tap-gesture',
+          'api2/pan-gesture',
+          'api2/long-press-gesture',
+          'api2/fling-gesture',
+          'api2/pinch-gesture',
+          'api2/rotation-gesture',
+          'api2/force-touch-gesture',
+          'api2/native-gesture',
+        ]
+      },
+      {
+        'Guides': [
+          'api2/installation',
+          'api2/quickstart/quickstart',
+        ]
+      }
     ],
     'API reference': [
       {

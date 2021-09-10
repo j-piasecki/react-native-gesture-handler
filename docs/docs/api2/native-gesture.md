@@ -4,11 +4,16 @@ title: Native gesture
 sidebar_label: Native gesture
 ---
 
+import BaseEventData from './base-gesture-event-data.md';
+import BaseEventConfig from './base-gesture-config.md';
+import BaseEventCallbacks from './base-gesture-callbacks.md';
+import BaseContinousEventCallbacks from './base-continous-gesture-callbacks.md';
+
 A gesture that allows other touch handling components to participate in RNGH's gesture system. When used, the other component should be the direct child of a `GestureDetector`.
 
 ## Config
 
-See [set of properties common to all gestures](./common-gesture.md#config). Below is a list of properties specific to `NativeGesture`:
+#### Properties specific to `NativeGesture`:
 
 ### `shouldActivateOnStart(value: boolean)` (**Android only**)
 
@@ -18,10 +23,19 @@ When `true`, underlying handler will activate unconditionally when in `BEGAN` or
 
 When `true`, cancels all other gesture handlers when this `NativeViewGestureHandler` receives an `ACTIVE` state event.
 
+<BaseEventConfig />
+
+## Callbacks
+
+<BaseEventCallbacks />
+<BaseContinousEventCallbacks />
+
 ## Event data
 
-See [set of event attributes common to all gestures](./common-gesture.md#event-data). Below is a list of gesture event attributes specific to `NativeGesture`:
+#### Event attributes specific to `NativeGesture`:
 
 ### `pointerInside`
 
 True if gesture was performed inside of containing view, false otherwise.
+
+<BaseEventData />

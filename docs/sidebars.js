@@ -10,6 +10,7 @@ module.exports = {
     RNGH2: [
       {
         'Introduction': [
+          'rngh2/introduction',
           'rngh2/composing-gestures',
           'rngh2/interoperability-gh',
           'rngh2/edge-cases',

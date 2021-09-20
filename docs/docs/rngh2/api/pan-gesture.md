@@ -11,7 +11,7 @@ import BaseContinousEventCallbacks from './base-continous-gesture-callbacks.md';
 
 A continuous gesture that can recognize a panning (dragging) gesture and track its movement.
 
-The gesture [activates](../state.md#active) when a finger is placed on the screen and moved some initial distance.
+The gesture [activates](../states-events.md#active-state--4) when a finger is placed on the screen and moved some initial distance.
 
 Configurations such as a minimum initial distance, specific vertical or horizontal pan detection and [number of fingers](#minPointers) required for activation (allowing for multifinger swipes) may be specified.
 
@@ -41,15 +41,15 @@ If you wish to track the "center of mass" virtual pointer and account for its ch
 
 ### `minDist(value: number)`
 
-Minimum distance the finger (or multiple finger) need to travel before the gesture [activates](../state.md#active). Expressed in points.
+Minimum distance the finger (or multiple finger) need to travel before the gesture [activates](../states-events.md#active-state--4). Expressed in points.
 
 ### `minPointers(value: number)`
 
-A number of fingers that is required to be placed before gesture can [activate](../state.md#active). Should be a higher or equal to 0 integer.
+A number of fingers that is required to be placed before gesture can [activate](../states-events.md#active-state--4). Should be a higher or equal to 0 integer.
 
 ### `maxPointers(value: number)`
 
-When the given number of fingers is placed on the screen and gesture hasn't yet [activated](../state.md#active) it will fail recognizing the gesture. Should be a higher or equal to 0 integer.
+When the given number of fingers is placed on the screen and gesture hasn't yet [activated](../states-events.md#active-state--4) it will fail recognizing the gesture. Should be a higher or equal to 0 integer.
 
 ### `activeOffsetX(value: number | number[])`
 

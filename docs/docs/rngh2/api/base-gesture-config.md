@@ -3,19 +3,19 @@
 ### `enabled(value: boolean)`
 
 Indicates whether the given handler should be analyzing stream of touch events or not.
-When set to `false` we can be sure that the handler's state will **never** become [`ACTIVE`](../state.md#active).
-If the value gets updated while the handler already started recognizing a gesture, then the handler's state it will immediately change to [`FAILED`](../state.md#failed) or [`CANCELLED`](../state.md#cancelled) (depending on its current state).
+When set to `false` we can be sure that the handler's state will **never** become [`ACTIVE`](../states-events.md#active-state--4).
+If the value gets updated while the handler already started recognizing a gesture, then the handler's state it will immediately change to [`FAILED`](../states-events.md#failed-state--1) or [`CANCELLED`](../states-events.md#cancelled-state--3) (depending on its current state).
 Default value is `true`.
 
 ### `shouldCancelWhenOutside(value: boolean)`
 
-When `true` the handler will [cancel](../state.md#cancelled) or [fail](../state.md#failed) recognition (depending on its current state) whenever the finger leaves the area of the connected view.
+When `true` the handler will [cancel](../states-events.md#cancelled-state--3) or [fail](../states-events.md#failed-state--1) recognition (depending on its current state) whenever the finger leaves the area of the connected view.
 Default value of this property is different depending on the handler type.
 Most handlers' `shouldCancelWhenOutside` property defaults to `false` except for the [`LongPressGesture`](./long-press-gesture.md) and [`TapGesture`](./tap-gesture.md) which default to `true`.
 
 ### `hitSlop(settings)`
 
-This parameter enables control over what part of the connected view area can be used to [begin](../state.md#began) recognizing the gesture.
+This parameter enables control over what part of the connected view area can be used to [begin](../states-events.md#began-state--2) recognizing the gesture.
 When a negative number is provided the bounds of the view will reduce the area by the given number of points in each of the sides evenly.
 
 Instead you can pass an object to specify how each boundary side should be reduced by providing different number of points for `left`, `right`, `top` or `bottom` sides.
@@ -35,10 +35,10 @@ Sets a ref to the gesture object, allowing for interoperability with the old API
 
 Adds a gesture that should be recognized simultaneously with this one.
 
-**IMPORTANT:** Note that this method only marks the relation between gestures, without [composing](./composing-gestures.md) them. [`GestureDetector`](./gesture-detector.md) will not recognize the `otherGesture` and it needs to be added to another detector in order to be recognized.
+**IMPORTANT:** Note that this method only marks the relation between gestures, without [composing](../composing-gestures.md) them. [`GestureDetector`](./gesture-detector.md) will not recognize the `otherGesture` and it needs to be added to another detector in order to be recognized.
 
 ### `requireExternalGestureToFail(otherGesture)`
 
 Adds a relation requiring another gesture to fail, before this one can activate.
 
-**IMPORTANT:** Note that this method only marks the relation between gestures, without [composing](./composing-gestures.md) them. [`GestureDetector`](./gesture-detector.md) will not recognize the `otherGesture` and it needs to be added to another detector in order to be recognized.
+**IMPORTANT:** Note that this method only marks the relation between gestures, without [composing](../composing-gestures.md) them. [`GestureDetector`](./gesture-detector.md) will not recognize the `otherGesture` and it needs to be added to another detector in order to be recognized.

@@ -10,8 +10,6 @@ module.exports = {
     RNGH2: [
       {
         'Introduction': [
-          'rngh2/states-events',
-          'rngh2/under-the-hood',
           'rngh2/composing-gestures',
           'rngh2/interoperability-gh',
           'rngh2/edge-cases',
@@ -19,22 +17,28 @@ module.exports = {
       },
       {
         'API reference': [
-          'rngh2/gesture',
-          'rngh2/gesture-detector',
-          'rngh2/tap-gesture',
-          'rngh2/pan-gesture',
-          'rngh2/long-press-gesture',
-          'rngh2/fling-gesture',
-          'rngh2/pinch-gesture',
-          'rngh2/rotation-gesture',
-          'rngh2/force-touch-gesture',
-          'rngh2/native-gesture',
+          'rngh2/api/gesture',
+          'rngh2/api/gesture-detector',
+          'rngh2/api/tap-gesture',
+          'rngh2/api/pan-gesture',
+          'rngh2/api/long-press-gesture',
+          'rngh2/api/fling-gesture',
+          'rngh2/api/pinch-gesture',
+          'rngh2/api/rotation-gesture',
+          'rngh2/api/force-touch-gesture',
+          'rngh2/api/native-gesture',
         ]
       },
       {
         'Guides': [
           'rngh2/installation',
           'rngh2/quickstart/quickstart',
+        ]
+      },
+      {
+        'Under the hood': [
+          'rngh2/states-events',
+          'rngh2/how-does-it-work',
         ]
       }
     ],

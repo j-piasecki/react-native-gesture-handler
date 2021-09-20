@@ -1,7 +1,7 @@
 ---
-id: under-the-hood
-title: Under the hood
-sidebar_label: Under the hood
+id: how-does-it-work
+title: How does it work?
+sidebar_label: How does it work?
 ---
 
 ### Units

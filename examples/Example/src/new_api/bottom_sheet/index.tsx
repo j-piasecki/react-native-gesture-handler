@@ -40,7 +40,14 @@ function Example() {
   };
 
   const onPanHandlerUpdate = (e: PanGestureHandlerEventPayload) => {
-    translationY.value = e.translationY - scrollOffset.value;
+    // when bottom sheet is not fully opened scroll offset should not influence
+    // its position (prevents random snapping when opening bottom sheet when
+    // the content is already scrolled)
+    if (snapPoint === FULLY_OPEN_SNAP_POINT) {
+      translationY.value = e.translationY - scrollOffset.value;
+    } else {
+      translationY.value = e.translationY;
+    }
   };
 
   const onHeaderHandlerUpdate = (e: PanGestureHandlerEventPayload) => {
@@ -89,16 +96,17 @@ function Example() {
     setSnapPoint(destSnapPoint);
   };
 
-  const blockScrollUntilAtTheTop = Gesture.Tap()
-    .maxDeltaY(snapPoint - FULLY_OPEN_SNAP_POINT)
-    .maxDuration(100000)
-    .withRef(blockScrollUntilAtTheTopRef);
-
   const panGesture = Gesture.Pan()
     .onUpdate(onPanHandlerUpdate)
     .onEnd(onPanHandlerEnd)
     .simultaneousWithExternalGesture(nativeViewRef)
     .withRef(panGestureRef);
+
+  const blockScrollUntilAtTheTop = Gesture.Tap()
+    .maxDeltaY(snapPoint - FULLY_OPEN_SNAP_POINT)
+    .maxDuration(100000)
+    .simultaneousWithExternalGesture(panGesture)
+    .withRef(blockScrollUntilAtTheTopRef);
 
   const headerGesture = Gesture.Pan()
     .onUpdate(onHeaderHandlerUpdate)
@@ -115,21 +123,16 @@ function Example() {
   });
 
   return (
-    <GestureDetector gesture={blockScrollUntilAtTheTop}>
-      <View style={styles.container}>
-        <LoremIpsum words={200} />
+    <View style={styles.container}>
+      <LoremIpsum words={200} />
+      <GestureDetector gesture={blockScrollUntilAtTheTop}>
         <Animated.View style={[styles.bottomSheet, bottomSheetAnimatedStyle]}>
           <GestureDetector gesture={headerGesture}>
             <View style={styles.header} />
           </GestureDetector>
-          <GestureDetector
-            gesture={Gesture.Simultaneous(
-              panGesture,
-              blockScrollUntilAtTheTop
-            )}>
+          <GestureDetector gesture={panGesture}>
             <NativeViewGestureHandler
               ref={nativeViewRef}
-              simultaneousHandlers={panGestureRef}
               waitFor={blockScrollUntilAtTheTopRef}>
               <Animated.ScrollView
                 bounces={false}
@@ -142,8 +145,8 @@ function Example() {
             </NativeViewGestureHandler>
           </GestureDetector>
         </Animated.View>
-      </View>
-    </GestureDetector>
+      </GestureDetector>
+    </View>
   );
 }
 

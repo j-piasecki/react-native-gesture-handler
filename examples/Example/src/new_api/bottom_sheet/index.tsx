@@ -1,11 +1,5 @@
 import React, { useRef, useState } from 'react';
-import {
-  Dimensions,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import {
   Gesture,
   GestureDetector,
@@ -32,33 +26,6 @@ function Example() {
   const translationY = useSharedValue(0);
   const scrollOffset = useSharedValue(0);
   const bottomSheetTranslateY = useSharedValue(CLOSED_SNAP_POINT);
-
-  const saveScrollOffset = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    scrollOffset.value = e.nativeEvent.contentOffset.y;
-  };
-
-  const onPanHandlerUpdate = (e: PanGestureHandlerEventPayload) => {
-    // when bottom sheet is not fully opened scroll offset should not influence
-    // its position (prevents random snapping when opening bottom sheet when
-    // the content is already scrolled)
-    if (snapPoint === FULLY_OPEN_SNAP_POINT) {
-      translationY.value = e.translationY - scrollOffset.value;
-    } else {
-      translationY.value = e.translationY;
-    }
-  };
-
-  const onHeaderHandlerUpdate = (e: PanGestureHandlerEventPayload) => {
-    translationY.value = e.translationY;
-  };
-
-  const onHeaderHandlerEnd = (e: PanGestureHandlerEventPayload) => {
-    onHandlerEnd(e);
-  };
-
-  const onPanHandlerEnd = (e: PanGestureHandlerEventPayload) => {
-    onHandlerEnd(e);
-  };
 
   const onHandlerEnd = ({ velocityY }: PanGestureHandlerEventPayload) => {
     const dragToss = 0.05;
@@ -95,8 +62,17 @@ function Example() {
   };
 
   const panGesture = Gesture.Pan()
-    .onUpdate(onPanHandlerUpdate)
-    .onEnd(onPanHandlerEnd)
+    .onUpdate((e) => {
+      // when bottom sheet is not fully opened scroll offset should not influence
+      // its position (prevents random snapping when opening bottom sheet when
+      // the content is already scrolled)
+      if (snapPoint === FULLY_OPEN_SNAP_POINT) {
+        translationY.value = e.translationY - scrollOffset.value;
+      } else {
+        translationY.value = e.translationY;
+      }
+    })
+    .onEnd(onHandlerEnd)
     .withRef(panGestureRef);
 
   const blockScrollUntilAtTheTop = Gesture.Tap()
@@ -106,8 +82,10 @@ function Example() {
     .withRef(blockScrollUntilAtTheTopRef);
 
   const headerGesture = Gesture.Pan()
-    .onUpdate(onHeaderHandlerUpdate)
-    .onEnd(onHeaderHandlerEnd);
+    .onUpdate((e) => {
+      translationY.value = e.translationY;
+    })
+    .onEnd(onHandlerEnd);
 
   const scrollViewGesture = Gesture.Native().requireExternalGestureToFail(
     blockScrollUntilAtTheTop
@@ -136,7 +114,9 @@ function Example() {
             <Animated.ScrollView
               bounces={false}
               scrollEventThrottle={1}
-              onScrollBeginDrag={saveScrollOffset}>
+              onScrollBeginDrag={(e) => {
+                scrollOffset.value = e.nativeEvent.contentOffset.y;
+              }}>
               <LoremIpsum />
               <LoremIpsum />
               <LoremIpsum />

@@ -9,7 +9,6 @@ import {
 import {
   Gesture,
   GestureDetector,
-  NativeViewGestureHandler,
   PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
 import Animated, {
@@ -27,7 +26,6 @@ const FULLY_OPEN_SNAP_POINT = SNAP_POINTS_FROM_TOP[0];
 const CLOSED_SNAP_POINT = SNAP_POINTS_FROM_TOP[SNAP_POINTS_FROM_TOP.length - 1];
 
 function Example() {
-  const nativeViewRef = useRef(Gesture.Pan());
   const panGestureRef = useRef(Gesture.Pan());
   const blockScrollUntilAtTheTopRef = useRef(Gesture.Tap());
   const [snapPoint, setSnapPoint] = useState(CLOSED_SNAP_POINT);
@@ -99,7 +97,6 @@ function Example() {
   const panGesture = Gesture.Pan()
     .onUpdate(onPanHandlerUpdate)
     .onEnd(onPanHandlerEnd)
-    .simultaneousWithExternalGesture(nativeViewRef)
     .withRef(panGestureRef);
 
   const blockScrollUntilAtTheTop = Gesture.Tap()
@@ -111,6 +108,10 @@ function Example() {
   const headerGesture = Gesture.Pan()
     .onUpdate(onHeaderHandlerUpdate)
     .onEnd(onHeaderHandlerEnd);
+
+  const scrollViewGesture = Gesture.Native().requireExternalGestureToFail(
+    blockScrollUntilAtTheTop
+  );
 
   const bottomSheetAnimatedStyle = useAnimatedStyle(() => {
     const translateY = bottomSheetTranslateY.value + translationY.value;
@@ -130,19 +131,16 @@ function Example() {
           <GestureDetector gesture={headerGesture}>
             <View style={styles.header} />
           </GestureDetector>
-          <GestureDetector gesture={panGesture}>
-            <NativeViewGestureHandler
-              ref={nativeViewRef}
-              waitFor={blockScrollUntilAtTheTopRef}>
-              <Animated.ScrollView
-                bounces={false}
-                scrollEventThrottle={1}
-                onScrollBeginDrag={saveScrollOffset}>
-                <LoremIpsum />
-                <LoremIpsum />
-                <LoremIpsum />
-              </Animated.ScrollView>
-            </NativeViewGestureHandler>
+          <GestureDetector
+            gesture={Gesture.Simultaneous(panGesture, scrollViewGesture)}>
+            <Animated.ScrollView
+              bounces={false}
+              scrollEventThrottle={1}
+              onScrollBeginDrag={saveScrollOffset}>
+              <LoremIpsum />
+              <LoremIpsum />
+              <LoremIpsum />
+            </Animated.ScrollView>
           </GestureDetector>
         </Animated.View>
       </GestureDetector>

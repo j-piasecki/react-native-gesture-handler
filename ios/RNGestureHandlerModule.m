@@ -155,6 +155,23 @@ RCT_EXPORT_METHOD(handleClearJSResponder)
   [self uiManagerWillPerformMounting:uiManager];
 }
 
+- (void)setGestureState:(int)state forHandler:(int)handlerTag
+{
+  RNGestureHandler *handler = [_manager handlerWithTag:@(handlerTag)];
+  
+  if (handler != nil) {
+    if (state == 1) {
+      handler.recognizer.state = UIGestureRecognizerStateFailed;
+    } else if (state == 3) {
+      handler.recognizer.state = UIGestureRecognizerStateCancelled;
+    } else if (state == 4) {
+      handler.recognizer.state = UIGestureRecognizerStateBegan;
+    } else if (state == 5) {
+      handler.recognizer.state = UIGestureRecognizerStateEnded;
+    }
+  }
+}
+
 - (void)uiManagerWillPerformMounting:(RCTUIManager *)uiManager
 {
     if (_operations.count == 0) {
@@ -175,7 +192,7 @@ RCT_EXPORT_METHOD(handleClearJSResponder)
 
 - (NSArray<NSString *> *)supportedEvents
 {
-    return @[@"onGestureHandlerEvent", @"onGestureHandlerStateChange"];
+    return @[@"onGestureHandlerEvent", @"onGestureHandlerStateChange", @"onGestureHandlerPointerEvent"];
 }
 
 #pragma mark Module Constants

@@ -2,7 +2,9 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTUIManager.h>
 
-@interface RNGestureHandlerModule : RCTEventEmitter <RCTBridgeModule>
+#import "RNGestureHandlerStateManager.h"
+
+@interface RNGestureHandlerModule : RCTEventEmitter <RCTBridgeModule, RNGestureHandlerStateManager>
 
 @end
   

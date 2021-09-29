@@ -3,6 +3,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#import "RNEventType.h"
 #import "RNGestureHandlerState.h"
 
 @interface RNGestureHandlerEventExtraData : NSObject
@@ -35,6 +36,9 @@
                                 withAnchorPoint:(CGPoint)anchorPoint
                                    withVelocity:(CGFloat)velocity
                             withNumberOfTouches:(NSUInteger)numberOfTouches;
++ (RNGestureHandlerEventExtraData *)forEventType:(RNEventType)eventType
+                                 withPointerData:(NSArray<NSDictionary *> *)data
+                             withNumberOfTouches:(NSUInteger)numberOfTouches;
 + (RNGestureHandlerEventExtraData *)forPointerInside:(BOOL)pointerInside;
 @end
 
@@ -55,6 +59,15 @@
                       handlerTag:(NSNumber *)handlerTag
                            state:(RNGestureHandlerState)state
                        prevState:(RNGestureHandlerState)prevState
+                       extraData:(RNGestureHandlerEventExtraData*)extraData NS_DESIGNATED_INITIALIZER;
+
+@end
+
+@interface RNGestureHandlerPointerEvent : NSObject <RCTEvent>
+
+- (instancetype)initWithReactTag:(NSNumber *)reactTag
+                      handlerTag:(NSNumber *)handlerTag
+                           state:(RNGestureHandlerState)state
                        extraData:(RNGestureHandlerEventExtraData*)extraData NS_DESIGNATED_INITIALIZER;
 
 @end

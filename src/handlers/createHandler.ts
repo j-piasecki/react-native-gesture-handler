@@ -29,6 +29,9 @@ const customGHEventsConfig = {
   onGestureHandlerStateChange: {
     registrationName: 'onGestureHandlerStateChange',
   },
+  onGestureHandlerPointerEvent: {
+    registrationName: 'onGestureHandlerPointerEvent',
+  },
 };
 
 // Add gesture specific events to genericDirectEventTypes object exported from UIManager

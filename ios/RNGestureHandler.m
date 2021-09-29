@@ -61,6 +61,7 @@ CGRect RNGHHitSlopInsetRect(CGRect rect, RNGHHitSlop hitSlop) {
 static NSHashTable<RNGestureHandler *> *allGestureHandlers;
 
 @implementation RNGestureHandler {
+    RNGestureHandlerPointerTracker *_pointerTracker;
     NSArray<NSNumber *> *_handlersToWaitFor;
     NSArray<NSNumber *> *_simultaneousHandlers;
     RNGHHitSlop _hitSlop;
@@ -70,6 +71,7 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
 - (instancetype)initWithTag:(NSNumber *)tag
 {
     if ((self = [super init])) {
+        _pointerTracker = [[RNGestureHandlerPointerTracker alloc] initWithGestureHandler:self];
         _tag = tag;
         _lastState = RNGestureHandlerStateUndetermined;
         _hitSlop = RNGHHitSlopEmpty;
@@ -216,6 +218,24 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
     } else {
         [self.emitter sendStateChangeEvent:event];
     }
+}
+
+- (void)sendPointerEventInState:(RNGestureHandlerState)state
+                 forViewWithTag:(NSNumber *)reactTag
+{
+  id extraData = [RNGestureHandlerEventExtraData forEventType:_pointerTracker.eventType
+                                              withPointerData:_pointerTracker.pointerData
+                                          withNumberOfTouches:_pointerTracker.trackedPointersCount];
+  id event = [[RNGestureHandlerPointerEvent alloc] initWithReactTag:reactTag
+                                                         handlerTag:_tag
+                                                              state:state
+                                                          extraData:extraData];
+  
+  if (self.usesDeviceEvents) {
+      [self.emitter sendPointerDeviceEvent:event];
+  } else {
+      [self.emitter sendPointerEvent:event];
+  }
 }
 
 - (RNGestureHandlerState)state

@@ -137,6 +137,11 @@
     // ignore...
 }
 
+- (id)handlerWithTag:(NSNumber *)handlerTag
+{
+  return [_registry handlerWithTag:handlerTag];
+}
+
 #pragma mark Root Views Management
 
 - (void)registerViewWithGestureRecognizerAttachedIfNeeded:(UIView *)childView
@@ -198,6 +203,11 @@
     [_eventDispatcher sendEvent:event];
 }
 
+- (void)sendPointerEvent:(RNGestureHandlerPointerEvent *)event
+{
+  [_eventDispatcher sendEvent:event];
+}
+
 - (void)sendTouchDeviceEvent:(RNGestureHandlerEvent *)event
 {
     NSMutableDictionary *body = [[event arguments] objectAtIndex:2];
@@ -208,6 +218,12 @@
 {
     NSMutableDictionary *body = [[event arguments] objectAtIndex:2];
     [_eventDispatcher sendDeviceEventWithName:@"onGestureHandlerStateChange" body:body];
+}
+
+- (void)sendPointerDeviceEvent:(RNGestureHandlerPointerEvent *)event
+{
+    NSMutableDictionary *body = [[event arguments] objectAtIndex:2];
+    [_eventDispatcher sendDeviceEventWithName:@"onGestureHandlerPointerEvent" body:body];
 }
 
 @end

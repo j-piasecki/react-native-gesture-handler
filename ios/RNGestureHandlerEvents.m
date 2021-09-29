@@ -103,6 +103,23 @@
                            @"numberOfPointers": @(numberOfTouches)}];
 }
 
++ (RNGestureHandlerEventExtraData *)forEventType:(RNEventType)eventType
+                                 withPointerData:(NSArray<NSDictionary *> *)data
+                             withNumberOfTouches:(NSUInteger)numberOfTouches
+{
+    if (data != nil) {
+      return [[RNGestureHandlerEventExtraData alloc]
+              initWithData:@{@"eventType": @(eventType),
+                             @"pointerData": data,
+                             @"numberOfPointers": @(numberOfTouches)}];
+    } else {
+      return [[RNGestureHandlerEventExtraData alloc]
+              initWithData:@{@"eventType": @(RNEventTypeUndetermined),
+                             @"pointerData": @{},
+                             @"numberOfPointers": @(numberOfTouches)}];
+    }
+}
+
 + (RNGestureHandlerEventExtraData *)forPointerInside:(BOOL)pointerInside
 {
     return [[RNGestureHandlerEventExtraData alloc]
@@ -232,6 +249,66 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
     [body setObject:@(_state) forKey:@"state"];
     [body setObject:@(_prevState) forKey:@"oldState"];
     return @[self.viewTag, @"onGestureHandlerStateChange", body];
+}
+
+@end
+
+@implementation RNGestureHandlerPointerEvent
+{
+    NSNumber *_handlerTag;
+    RNGestureHandlerState _state;
+    RNGestureHandlerEventExtraData *_extraData;
+}
+
+@synthesize viewTag = _viewTag;
+@synthesize coalescingKey = _coalescingKey;
+
+- (instancetype)initWithReactTag:(NSNumber *)reactTag
+                      handlerTag:(NSNumber *)handlerTag
+                           state:(RNGestureHandlerState)state
+                       extraData:(RNGestureHandlerEventExtraData *)extraData
+{
+    static uint16_t coalescingKey = 0;
+    if ((self = [super init])) {
+        _viewTag = reactTag;
+        _handlerTag = handlerTag;
+        _state = state;
+        _extraData = extraData;
+        _coalescingKey = coalescingKey++;
+    }
+    return self;
+}
+
+RCT_NOT_IMPLEMENTED(- (instancetype)init)
+
+- (NSString *)eventName
+{
+    return @"onGestureHandlerPointerEvent";
+}
+
+- (BOOL)canCoalesce
+{
+    // TODO: event coalescing
+    return NO;
+}
+
+- (id<RCTEvent>)coalesceWithEvent:(id<RCTEvent>)newEvent;
+{
+    return newEvent;
+}
+
++ (NSString *)moduleDotMethod
+{
+    return @"RCTEventEmitter.receiveEvent";
+}
+
+- (NSArray *)arguments
+{
+    NSMutableDictionary *body = [NSMutableDictionary dictionaryWithDictionary:_extraData.data];
+    [body setObject:_viewTag forKey:@"target"];
+    [body setObject:_handlerTag forKey:@"handlerTag"];
+    [body setObject:@(_state) forKey:@"state"];
+    return @[self.viewTag, @"onGestureHandlerPointerEvent", body];
 }
 
 @end

@@ -297,6 +297,15 @@ class RNGestureHandlerModule(reactContext: ReactApplicationContext?)
     }
   }
 
+  private class CustomGestureHandlerFactory : HandlerFactory<CustomGestureHandler>() {
+    override val type = CustomGestureHandler::class.java
+    override val name = "CustomGestureHandler"
+
+    override fun create(context: Context?): CustomGestureHandler {
+      return CustomGestureHandler()
+    }
+  }
+
   private val eventListener = object : OnTouchEventListener {
     override fun <T : GestureHandler<T>> onTouchEvent(handler: T, event: MotionEvent) {
       this@RNGestureHandlerModule.onTouchEvent(handler, event)
@@ -317,7 +326,8 @@ class RNGestureHandlerModule(reactContext: ReactApplicationContext?)
     PanGestureHandlerFactory(),
     PinchGestureHandlerFactory(),
     RotationGestureHandlerFactory(),
-    FlingGestureHandlerFactory()
+    FlingGestureHandlerFactory(),
+    CustomGestureHandlerFactory()
   )
   val registry: RNGestureHandlerRegistry = RNGestureHandlerRegistry()
   private val interactionManager = RNGestureHandlerInteractionManager()

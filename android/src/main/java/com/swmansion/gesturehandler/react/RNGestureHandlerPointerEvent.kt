@@ -50,7 +50,7 @@ class RNGestureHandlerPointerEvent private constructor() : Event<RNGestureHandle
     fun <T: GestureHandler<T>> createEventData(handler: T,): WritableMap = Arguments.createMap().apply {
         putInt("handlerTag", handler.tag)
         putInt("state", handler.state)
-        putInt("numberOfPointers", handler.numberOfPointers)
+        putInt("numberOfPointers", handler.trackedPointersCount)
         putInt("eventType", handler.pointerEventType)
 
         handler.pointerEventPayload?.let {

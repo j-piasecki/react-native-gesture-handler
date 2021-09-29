@@ -28,6 +28,7 @@ import HorizontalDrawer from './basic/horizontalDrawer';
 import PagerAndDrawer from './basic/pagerAndDrawer';
 import ForceTouch from './basic/forcetouch';
 
+import CustomGesture from './new_api/custom_gesture';
 import ReanimatedSimple from './new_api/reanimated';
 import Camera from './new_api/camera';
 import Transformations from './new_api/transformations';
@@ -90,6 +91,7 @@ const EXAMPLES: ExamplesSection[] = [
   {
     sectionTitle: 'New api',
     data: [
+      { name: 'Custom gesture', component: CustomGesture },
       {
         name: 'Simple interaction with Reanimated',
         component: ReanimatedSimple,

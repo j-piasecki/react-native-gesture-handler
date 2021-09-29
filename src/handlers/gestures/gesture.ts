@@ -24,7 +24,8 @@ export type GestureType =
   | BaseGesture<PinchGestureHandlerEventPayload>
   | BaseGesture<FlingGestureHandlerEventPayload>
   | BaseGesture<ForceTouchGestureHandlerEventPayload>
-  | BaseGesture<NativeViewGestureHandlerPayload>;
+  | BaseGesture<NativeViewGestureHandlerPayload>
+  | BaseGesture<Record<string, never>>;
 
 export type GestureRef = number | GestureType | React.RefObject<GestureType>;
 export interface BaseGestureConfig

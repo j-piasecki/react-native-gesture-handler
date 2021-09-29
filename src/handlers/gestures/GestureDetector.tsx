@@ -14,6 +14,7 @@ import {
   filterConfig,
   findNodeHandle,
   UnwrappedGestureHandlerEvent,
+  UnwrappedGestureHandlerPointerEvent,
   UnwrappedGestureHandlerStateChangeEvent,
 } from '../gestureHandlerCommon';
 import { flingGestureHandlerProps } from '../FlingGestureHandler';
@@ -225,9 +226,22 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
     event:
       | UnwrappedGestureHandlerEvent
       | UnwrappedGestureHandlerStateChangeEvent
+      | UnwrappedGestureHandlerPointerEvent
   ): event is UnwrappedGestureHandlerStateChangeEvent {
     'worklet';
+    // @ts-ignore Yes, the oldState prop is missing on UnwrappedGestureHandlerPointerEvent,
+    // that's the point
     return event.oldState != null;
+  }
+
+  function isPointerEvent(
+    event:
+      | UnwrappedGestureHandlerEvent
+      | UnwrappedGestureHandlerStateChangeEvent
+      | UnwrappedGestureHandlerPointerEvent
+  ): event is UnwrappedGestureHandlerPointerEvent {
+    'worklet';
+    return event.eventType != null;
   }
 
   function getHandler(
@@ -244,6 +258,8 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
         return gesture.onUpdate;
       case CALLBACK_TYPE.END:
         return gesture.onEnd;
+      case CALLBACK_TYPE.POINTER:
+        return gesture.onPointerEvent;
     }
   }
 
@@ -252,7 +268,8 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
     gesture: HandlerCallbacks<Record<string, unknown>>,
     event:
       | UnwrappedGestureHandlerStateChangeEvent
-      | UnwrappedGestureHandlerEvent,
+      | UnwrappedGestureHandlerEvent
+      | UnwrappedGestureHandlerPointerEvent,
     success?: boolean
   ) {
     'worklet';
@@ -277,6 +294,7 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
     event:
       | UnwrappedGestureHandlerStateChangeEvent
       | UnwrappedGestureHandlerEvent
+      | UnwrappedGestureHandlerPointerEvent
   ) => {
     'worklet';
 
@@ -315,6 +333,8 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
           ) {
             runWorklet(CALLBACK_TYPE.END, gesture, event, false);
           }
+        } else if (isPointerEvent(event)) {
+          runWorklet(CALLBACK_TYPE.POINTER, gesture, event);
         } else {
           runWorklet(CALLBACK_TYPE.UPDATE, gesture, event);
         }
@@ -325,7 +345,11 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const event = Reanimated.useEvent(
     callback,
-    ['onGestureHandlerStateChange', 'onGestureHandlerEvent'],
+    [
+      'onGestureHandlerStateChange',
+      'onGestureHandlerEvent',
+      'onGestureHandlerPointerEvent',
+    ],
     true
   );
 

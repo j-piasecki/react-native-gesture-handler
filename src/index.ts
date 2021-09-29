@@ -1,5 +1,6 @@
 import { initialize } from './init';
 
+export { EventType } from './EventType';
 export { Directions } from './Directions';
 export { State } from './State';
 export { default as gestureHandlerRootHOC } from './gestureHandlerRootHOC';
@@ -11,6 +12,8 @@ export type {
   // event payloads types
   GestureEventPayload,
   HandlerStateChangeEventPayload,
+  // raw pointer data
+  PointerData,
 } from './handlers/gestureHandlerCommon';
 export type {
   TapGestureHandlerEventPayload,

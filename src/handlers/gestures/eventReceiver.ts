@@ -2,6 +2,7 @@ import { DeviceEventEmitter, EmitterSubscription } from 'react-native';
 import { State } from '../../State';
 import {
   UnwrappedGestureHandlerEvent,
+  UnwrappedGestureHandlerPointerEvent,
   UnwrappedGestureHandlerStateChangeEvent,
 } from '../gestureHandlerCommon';
 import { findHandler } from '../handlersRegistry';
@@ -9,6 +10,7 @@ import { BaseGesture } from './gesture';
 
 let gestureHandlerEventSubscription: EmitterSubscription | null = null;
 let gestureHandlerStateChangeEventSubscription: EmitterSubscription | null = null;
+let gestureHandlerPointerEventSubscription: EmitterSubscription | null = null;
 
 function isStateChangeEvent(
   event: UnwrappedGestureHandlerEvent | UnwrappedGestureHandlerStateChangeEvent
@@ -50,6 +52,16 @@ function onGestureHandlerEvent(
   }
 }
 
+function onPointerEvent(event: UnwrappedGestureHandlerPointerEvent) {
+  const handler = findHandler(event.handlerTag) as BaseGesture<
+    Record<string, unknown>
+  >;
+
+  if (handler) {
+    handler.handlers.onPointerEvent?.(event);
+  }
+}
+
 export function startListening() {
   stopListening();
 
@@ -61,6 +73,11 @@ export function startListening() {
   gestureHandlerStateChangeEventSubscription = DeviceEventEmitter.addListener(
     'onGestureHandlerStateChange',
     onGestureHandlerEvent
+  );
+
+  gestureHandlerPointerEventSubscription = DeviceEventEmitter.addListener(
+    'onGestureHandlerPointerEvent',
+    onPointerEvent
   );
 }
 
@@ -77,5 +94,13 @@ export function stopListening() {
     );
 
     gestureHandlerStateChangeEventSubscription = null;
+  }
+
+  if (gestureHandlerPointerEventSubscription) {
+    DeviceEventEmitter.removeSubscription(
+      gestureHandlerPointerEventSubscription
+    );
+
+    gestureHandlerPointerEventSubscription = null;
   }
 }

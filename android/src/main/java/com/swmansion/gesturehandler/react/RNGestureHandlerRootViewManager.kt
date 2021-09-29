@@ -26,7 +26,9 @@ class RNGestureHandlerRootViewManager : ViewGroupManager<RNGestureHandlerRootVie
     RNGestureHandlerEvent.EVENT_NAME to
       mutableMapOf("registrationName" to RNGestureHandlerEvent.EVENT_NAME),
     RNGestureHandlerStateChangeEvent.EVENT_NAME to
-      mutableMapOf("registrationName" to RNGestureHandlerStateChangeEvent.EVENT_NAME))
+      mutableMapOf("registrationName" to RNGestureHandlerStateChangeEvent.EVENT_NAME),
+    RNGestureHandlerPointerEvent.EVENT_NAME to
+      mutableMapOf("registrationName" to RNGestureHandlerPointerEvent.EVENT_NAME))
 
   companion object {
     const val REACT_CLASS = "GestureHandlerRootView"

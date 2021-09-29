@@ -5,6 +5,7 @@ import {
   CommonGestureConfig,
   UnwrappedGestureHandlerStateChangeEvent,
   UnwrappedGestureHandlerEvent,
+  UnwrappedGestureHandlerPointerEvent,
 } from '../gestureHandlerCommon';
 import { getNextHandlerTag } from '../handlersRegistry';
 import { LongPressGestureHandlerEventPayload } from '../LongPressGestureHandler';
@@ -32,6 +33,7 @@ export interface BaseGestureConfig
   ref?: React.MutableRefObject<GestureType>;
   requireToFail?: GestureRef[];
   simultaneousWith?: GestureRef[];
+  needsPointerData?: boolean;
 }
 
 export type HandlerCallbacks<EventPayloadT extends Record<string, unknown>> = {
@@ -47,6 +49,7 @@ export type HandlerCallbacks<EventPayloadT extends Record<string, unknown>> = {
     success: boolean
   ) => void;
   onUpdate?: (event: UnwrappedGestureHandlerEvent<EventPayloadT>) => void;
+  onPointerEvent?: (event: UnwrappedGestureHandlerPointerEvent) => void;
   isWorklet: boolean[];
 };
 
@@ -55,6 +58,7 @@ export const CALLBACK_TYPE = {
   START: 2,
   UPDATE: 3,
   END: 4,
+  POINTER: 5,
 } as const;
 
 // Allow using CALLBACK_TYPE as object and type
@@ -109,6 +113,7 @@ export abstract class BaseGesture<
 
   protected isWorklet(
     callback:
+      | ((event: UnwrappedGestureHandlerPointerEvent) => void)
       | ((event: UnwrappedGestureHandlerEvent<EventPayloadT>) => void)
       | ((
           event: UnwrappedGestureHandlerStateChangeEvent<EventPayloadT>
@@ -147,6 +152,16 @@ export abstract class BaseGesture<
     this.handlers.onEnd = callback;
     //@ts-ignore if callback is a worklet, the property will be available, if not then the check will return false
     this.handlers.isWorklet[CALLBACK_TYPE.END] = this.isWorklet(callback);
+    return this;
+  }
+
+  onPointerEvent(
+    callback: (event: UnwrappedGestureHandlerPointerEvent) => void
+  ) {
+    this.config.needsPointerData = true;
+    this.handlers.onPointerEvent = callback;
+    this.handlers.isWorklet[CALLBACK_TYPE.POINTER] = this.isWorklet(callback);
+
     return this;
   }
 

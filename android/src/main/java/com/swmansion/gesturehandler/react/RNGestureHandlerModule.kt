@@ -8,11 +8,13 @@ import com.facebook.react.bridge.*
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.PixelUtil
 import com.facebook.react.uimanager.UIBlock
+import com.swmansion.common.GestureHandlerStateManager
 import com.swmansion.gesturehandler.*
 import java.util.*
 
 @ReactModule(name = RNGestureHandlerModule.MODULE_NAME)
-class RNGestureHandlerModule(reactContext: ReactApplicationContext?) : ReactContextBaseJavaModule(reactContext) {
+class RNGestureHandlerModule(reactContext: ReactApplicationContext?)
+  : ReactContextBaseJavaModule(reactContext), GestureHandlerStateManager {
   private abstract class HandlerFactory<T : GestureHandler<T>> : RNGestureHandlerEventDataExtractor<T> {
     abstract val type: Class<T>
     abstract val name: String
@@ -24,6 +26,9 @@ class RNGestureHandlerModule(reactContext: ReactApplicationContext?) : ReactCont
       }
       if (config.hasKey(KEY_ENABLED)) {
         handler.setEnabled(config.getBoolean(KEY_ENABLED))
+      }
+      if (config.hasKey(KEY_NEEDS_POINTER_DATA)) {
+        handler.needsPointerData = config.getBoolean(KEY_NEEDS_POINTER_DATA)
       }
       if (config.hasKey(KEY_HIT_SLOP)) {
         handleHitSlopProperty(handler, config)
@@ -300,6 +305,10 @@ class RNGestureHandlerModule(reactContext: ReactApplicationContext?) : ReactCont
     override fun <T : GestureHandler<T>> onStateChange(handler: T, newState: Int, oldState: Int) {
       this@RNGestureHandlerModule.onStateChange(handler, newState, oldState)
     }
+
+    override fun <T : GestureHandler<T>> onPointerEvent(handler: T) {
+      this@RNGestureHandlerModule.onPointerEvent(handler)
+    }
   }
   private val handlerFactories = arrayOf<HandlerFactory<*>>(
     NativeViewGestureHandlerFactory(),
@@ -376,6 +385,17 @@ class RNGestureHandlerModule(reactContext: ReactApplicationContext?) : ReactCont
 
   @ReactMethod
   fun handleClearJSResponder() {
+  }
+
+  override fun setGestureHandlerState(handlerTag: Int, newState: Int) {
+    registry.getHandler(handlerTag)?.let { handler ->
+      when (newState) {
+        GestureHandler.STATE_ACTIVE -> handler.activate()
+        GestureHandler.STATE_END -> handler.end()
+        GestureHandler.STATE_FAILED -> handler.fail()
+        GestureHandler.STATE_CANCELLED -> handler.cancel()
+      }
+    }
   }
 
   override fun getConstants(): Map<String, Any> {
@@ -540,10 +560,34 @@ class RNGestureHandlerModule(reactContext: ReactApplicationContext?) : ReactCont
     }
   }
 
+  private fun <T : GestureHandler<T>> onPointerEvent(handler: T) {
+    if (handler.tag < 0) {
+      // root containers use negative tags, we don't need to dispatch events for them to the JS
+      return
+    }
+    if (handler.state == GestureHandler.STATE_BEGAN || handler.state == GestureHandler.STATE_ACTIVE || handler.state == GestureHandler.STATE_UNDETERMINED) {
+      if (handler.usesDeviceEvents) {
+        val data = RNGestureHandlerPointerEvent.createEventData(handler)
+
+        reactApplicationContext
+          .deviceEventEmitter
+          .emit(RNGestureHandlerPointerEvent.EVENT_NAME, data)
+      } else {
+        reactApplicationContext
+          .UIManager
+          .eventDispatcher.let {
+            val event = RNGestureHandlerPointerEvent.obtain(handler)
+            it.dispatchEvent(event)
+          }
+      }
+    }
+  }
+
   companion object {
     const val MODULE_NAME = "RNGestureHandlerModule"
     private const val KEY_SHOULD_CANCEL_WHEN_OUTSIDE = "shouldCancelWhenOutside"
     private const val KEY_ENABLED = "enabled"
+    private const val KEY_NEEDS_POINTER_DATA = "needsPointerData"
     private const val KEY_HIT_SLOP = "hitSlop"
     private const val KEY_HIT_SLOP_LEFT = "left"
     private const val KEY_HIT_SLOP_TOP = "top"

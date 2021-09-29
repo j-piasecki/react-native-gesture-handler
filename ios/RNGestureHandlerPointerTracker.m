@@ -82,6 +82,10 @@
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
+  if (!_gestureHandler.needsPointerData) {
+    return;
+  }
+  
   _eventType = RNEventTypePointerDown;
   
   NSDictionary *data[touches.count];
@@ -102,6 +106,10 @@
 
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
+  if (!_gestureHandler.needsPointerData) {
+    return;
+  }
+  
   _eventType = RNEventTypePointerMove;
   
   NSDictionary *data[touches.count];
@@ -118,6 +126,10 @@
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
+  if (!_gestureHandler.needsPointerData) {
+    return;
+  }
+  
   _eventType = RNEventTypePointerUp;
   
   NSDictionary *data[touches.count];
@@ -138,11 +150,19 @@
 
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
+  if (!_gestureHandler.needsPointerData) {
+    return;
+  }
+  
   [self reset];
 }
 
 - (void)reset
 {
+  if (!_gestureHandler.needsPointerData) {
+    return;
+  }
+  
   if (_trackedPointersCount == 0) {
     // gesture has finished because all pointers were lifted, reset event type to send state change event
     _eventType = RNEventTypeUndetermined;
@@ -172,6 +192,10 @@
 
 - (void)sendEvent
 {
+  if (!_gestureHandler.needsPointerData) {
+    return;
+  }
+  
   [_gestureHandler sendPointerEventInState:[_gestureHandler state] forViewWithTag:_gestureHandler.recognizer.view.reactTag];
 }
 

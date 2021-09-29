@@ -62,12 +62,3 @@
                        extraData:(RNGestureHandlerEventExtraData*)extraData NS_DESIGNATED_INITIALIZER;
 
 @end
-
-@interface RNGestureHandlerPointerEvent : NSObject <RCTEvent>
-
-- (instancetype)initWithReactTag:(NSNumber *)reactTag
-                      handlerTag:(NSNumber *)handlerTag
-                           state:(RNGestureHandlerState)state
-                       extraData:(RNGestureHandlerEventExtraData*)extraData NS_DESIGNATED_INITIALIZER;
-
-@end

@@ -345,11 +345,7 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const event = Reanimated.useEvent(
     callback,
-    [
-      'onGestureHandlerStateChange',
-      'onGestureHandlerEvent',
-      'onGestureHandlerPointerEvent',
-    ],
+    ['onGestureHandlerStateChange', 'onGestureHandlerEvent'],
     true
   );
 

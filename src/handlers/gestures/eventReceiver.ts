@@ -10,16 +10,30 @@ import { BaseGesture } from './gesture';
 
 let gestureHandlerEventSubscription: EmitterSubscription | null = null;
 let gestureHandlerStateChangeEventSubscription: EmitterSubscription | null = null;
-let gestureHandlerPointerEventSubscription: EmitterSubscription | null = null;
-
 function isStateChangeEvent(
-  event: UnwrappedGestureHandlerEvent | UnwrappedGestureHandlerStateChangeEvent
+  event:
+    | UnwrappedGestureHandlerEvent
+    | UnwrappedGestureHandlerStateChangeEvent
+    | UnwrappedGestureHandlerPointerEvent
 ): event is UnwrappedGestureHandlerStateChangeEvent {
+  // @ts-ignore oldState doesn't exist on UnwrappedGestureHandlerPointerEvent and that's the point
   return event.oldState != null;
 }
 
+function isPointerChangeEvent(
+  event:
+    | UnwrappedGestureHandlerEvent
+    | UnwrappedGestureHandlerStateChangeEvent
+    | UnwrappedGestureHandlerPointerEvent
+): event is UnwrappedGestureHandlerPointerEvent {
+  return event.eventType != null;
+}
+
 function onGestureHandlerEvent(
-  event: UnwrappedGestureHandlerEvent | UnwrappedGestureHandlerStateChangeEvent
+  event:
+    | UnwrappedGestureHandlerEvent
+    | UnwrappedGestureHandlerStateChangeEvent
+    | UnwrappedGestureHandlerPointerEvent
 ) {
   const handler = findHandler(event.handlerTag) as BaseGesture<
     Record<string, unknown>
@@ -46,19 +60,11 @@ function onGestureHandlerEvent(
       ) {
         handler.handlers.onEnd?.(event, false);
       }
+    } else if (isPointerChangeEvent(event)) {
+      handler.handlers?.onPointerEvent?.(event);
     } else {
       handler.handlers.onUpdate?.(event);
     }
-  }
-}
-
-function onPointerEvent(event: UnwrappedGestureHandlerPointerEvent) {
-  const handler = findHandler(event.handlerTag) as BaseGesture<
-    Record<string, unknown>
-  >;
-
-  if (handler) {
-    handler.handlers.onPointerEvent?.(event);
   }
 }
 
@@ -73,11 +79,6 @@ export function startListening() {
   gestureHandlerStateChangeEventSubscription = DeviceEventEmitter.addListener(
     'onGestureHandlerStateChange',
     onGestureHandlerEvent
-  );
-
-  gestureHandlerPointerEventSubscription = DeviceEventEmitter.addListener(
-    'onGestureHandlerPointerEvent',
-    onPointerEvent
   );
 }
 
@@ -94,13 +95,5 @@ export function stopListening() {
     );
 
     gestureHandlerStateChangeEventSubscription = null;
-  }
-
-  if (gestureHandlerPointerEventSubscription) {
-    DeviceEventEmitter.removeSubscription(
-      gestureHandlerPointerEventSubscription
-    );
-
-    gestureHandlerPointerEventSubscription = null;
   }
 }

@@ -90,6 +90,7 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
 {
   self.enabled = YES;
   _shouldCancelWhenOutside = NO;
+  _needsPointerData = NO;
   _handlersToWaitFor = nil;
   _simultaneousHandlers = nil;
   _hitSlop = RNGHHitSlopEmpty;
@@ -109,6 +110,11 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
     prop = config[@"shouldCancelWhenOutside"];
     if (prop != nil) {
         _shouldCancelWhenOutside = [RCTConvert BOOL:prop];
+    }
+  
+    prop = config[@"needsPointerData"];
+    if (prop != nil) {
+        _needsPointerData = [RCTConvert BOOL:prop];
     }
 
     prop = config[@"hitSlop"];
@@ -226,15 +232,12 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
   id extraData = [RNGestureHandlerEventExtraData forEventType:_pointerTracker.eventType
                                               withPointerData:_pointerTracker.pointerData
                                           withNumberOfTouches:_pointerTracker.trackedPointersCount];
-  id event = [[RNGestureHandlerPointerEvent alloc] initWithReactTag:reactTag
-                                                         handlerTag:_tag
-                                                              state:state
-                                                          extraData:extraData];
+  id event = [[RNGestureHandlerEvent alloc] initWithReactTag:reactTag handlerTag:_tag state:state extraData:extraData coalescingKey:[_tag intValue]];
   
   if (self.usesDeviceEvents) {
-      [self.emitter sendPointerDeviceEvent:event];
+      [self.emitter sendStateChangeDeviceEvent:event];
   } else {
-      [self.emitter sendPointerEvent:event];
+      [self.emitter sendStateChangeEvent:event];
   }
 }
 

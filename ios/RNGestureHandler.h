@@ -29,13 +29,9 @@ if (value != nil) { recognizer.prop = [RCTConvert type:value]; }\
 
 - (void)sendStateChangeEvent:(nonnull RNGestureHandlerStateChange *)event;
 
-- (void)sendPointerEvent:(nonnull RNGestureHandlerPointerEvent *)event;
-
 - (void)sendTouchDeviceEvent:(nonnull RNGestureHandlerEvent *)event;
 
 - (void)sendStateChangeDeviceEvent:(nonnull RNGestureHandlerStateChange *)event;
-
-- (void)sendPointerDeviceEvent:(nonnull RNGestureHandlerPointerEvent *)event;
 
 @end
 
@@ -65,7 +61,8 @@ if (value != nil) { recognizer.prop = [RCTConvert type:value]; }\
 @property (nonatomic, readonly, nullable) RNGestureHandlerPointerTracker *pointerTracker;
 @property (nonatomic) BOOL enabled;
 @property (nonatomic) BOOL usesDeviceEvents;
-@property(nonatomic) BOOL shouldCancelWhenOutside;
+@property (nonatomic) BOOL shouldCancelWhenOutside;
+@property (nonatomic) BOOL needsPointerData;
 
 - (void)bindToView:(nonnull UIView *)view;
 - (void)unbindFromView;

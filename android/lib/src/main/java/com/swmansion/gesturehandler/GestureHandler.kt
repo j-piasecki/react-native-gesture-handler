@@ -365,6 +365,9 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
         }
       }
 
+      trackedPointersCount = 0
+      trackedPointers.fill(null)
+
       dispatchPointerEvent()
     }
   }
@@ -395,7 +398,7 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
       return
     }
 
-    if (trackedPointersCount > 0 && newState == STATE_END || newState == STATE_CANCELLED || newState == STATE_FAILED) {
+    if (trackedPointersCount > 0 && (newState == STATE_END || newState == STATE_CANCELLED || newState == STATE_FAILED)) {
       cancelPointers()
     }
 

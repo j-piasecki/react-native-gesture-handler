@@ -62,6 +62,7 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
 
 @implementation RNGestureHandler {
     RNGestureHandlerPointerTracker *_pointerTracker;
+    RNGestureHandlerState _state;
     NSArray<NSNumber *> *_handlersToWaitFor;
     NSArray<NSNumber *> *_simultaneousHandlers;
     RNGHHitSlop _hitSlop;
@@ -74,6 +75,7 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
         _pointerTracker = [[RNGestureHandlerPointerTracker alloc] initWithGestureHandler:self];
         _tag = tag;
         _lastState = RNGestureHandlerStateUndetermined;
+        _state = RNGestureHandlerStateBegan;
         _hitSlop = RNGHHitSlopEmpty;
 
         static dispatch_once_t onceToken;
@@ -173,6 +175,7 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
 
 - (void)handleGesture:(UIGestureRecognizer *)recognizer
 {
+    _state = [self recognizerState];
     RNGestureHandlerEventExtraData *eventData = [self eventExtraData:recognizer];
     [self sendEventsInState:self.state forViewWithTag:recognizer.view.reactTag withExtraData:eventData];
 }
@@ -241,7 +244,7 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
   }
 }
 
-- (RNGestureHandlerState)state
+- (RNGestureHandlerState)recognizerState
 {
     switch (_recognizer.state) {
         case UIGestureRecognizerStateBegan:
@@ -257,6 +260,13 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
             return RNGestureHandlerStateActive;
     }
     return RNGestureHandlerStateUndetermined;
+}
+
+- (RNGestureHandlerState)state
+{
+    // instead of mapping state of the recognizer directly, use value mapped when handleGesture was
+    // called, making it correct while awaiting for another handler failure
+    return _state;
 }
 
 #pragma mark UIGestureRecognizerDelegate
@@ -336,8 +346,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)reset
 {
+    // do not reset states while gesture is tracking pointers, as gestureRecognizerShouldBegin
+    // might be called after some pointers are down, and after state manipulation by the user.
+    // Pointer tracker calls this method when it resets, and in that case it no longer tracks
+    // any pointers, thus entering this if
     if (!_needsPointerData || _pointerTracker.trackedPointersCount == 0) {
         _lastState = RNGestureHandlerStateUndetermined;
+        _state = RNGestureHandlerStateBegan;
     }
 }
 

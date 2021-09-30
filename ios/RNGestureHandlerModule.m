@@ -171,7 +171,12 @@ RCT_EXPORT_METHOD(handleClearJSResponder)
     } else if (state == 5) {
       handler.recognizer.state = UIGestureRecognizerStateEnded;
     }
-    [handler handleGesture:handler.recognizer];
+    
+    // do not send state change event when activating because it bypasses
+    // shouldRequireFailureOfGestureRecognizer
+    if (state != 4) {
+      [handler handleGesture:handler.recognizer];
+    }
   }
 }
 

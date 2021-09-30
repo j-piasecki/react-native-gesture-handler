@@ -291,12 +291,11 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
     lastEventOffsetX = event.rawX - event.x
     lastEventOffsetY = event.rawY - event.y
 
-    onHandle(event)
-
     if (needsPointerData) {
       updatePointerData(event)
     }
 
+    onHandle(event)
     if (event != origEvent) {
       event.recycle()
     }
@@ -399,6 +398,11 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
     if (state == newState) {
       return
     }
+
+    if (trackedPointersCount > 0 && newState == STATE_END || newState == STATE_CANCELLED || newState == STATE_FAILED) {
+      cancelPointers()
+    }
+
     val oldState = state
     state = newState
     if (state == STATE_ACTIVE) {
@@ -539,10 +543,6 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
   protected open fun onReset() {}
   protected open fun onCancel() {}
   fun reset() {
-    if (trackedPointersCount > 0) {
-      cancelPointers()
-    }
-    
     view = null
     orchestrator = null
     Arrays.fill(trackedPointerIDs, -1)

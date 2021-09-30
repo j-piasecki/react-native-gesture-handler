@@ -291,11 +291,12 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
     lastEventOffsetX = event.rawX - event.x
     lastEventOffsetY = event.rawY - event.y
 
+    onHandle(event)
+
     if (needsPointerData) {
       updatePointerData(event)
     }
 
-    onHandle(event)
     if (event != origEvent) {
       event.recycle()
     }
@@ -361,6 +362,8 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
   private fun cancelPointers() {
     trackedPointers?.let { trackedPointers ->
       pointerEventType = RNGestureHandlerPointerEvent.EVENT_POINTER_CANCELLED
+      pointerEventPayload = null
+
       for (pointer in trackedPointers) {
         pointer?.let {
           addPointerData(it)
@@ -508,7 +511,9 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
 
   fun activate() {
     if (state == STATE_UNDETERMINED || state == STATE_BEGAN) {
+      beforeActivation()
       moveToState(STATE_ACTIVE)
+      afterActivation()
     }
   }
 
@@ -529,14 +534,23 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
   }
 
   protected open fun onStateChange(newState: Int, previousState: Int) {}
+  protected open fun beforeActivation() {}
+  protected open fun afterActivation() {}
   protected open fun onReset() {}
   protected open fun onCancel() {}
   fun reset() {
+    if (trackedPointersCount > 0) {
+      cancelPointers()
+    }
+    
     view = null
     orchestrator = null
     Arrays.fill(trackedPointerIDs, -1)
     trackedPointersIDsCount = 0
+
+    trackedPointersCount = 0
     trackedPointers?.fill(null)
+    pointerEventType = RNGestureHandlerPointerEvent.EVENT_UNDETERMINED
     onReset()
   }
 

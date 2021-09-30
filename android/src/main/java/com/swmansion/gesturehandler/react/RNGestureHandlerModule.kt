@@ -575,7 +575,8 @@ class RNGestureHandlerModule(reactContext: ReactApplicationContext?)
       // root containers use negative tags, we don't need to dispatch events for them to the JS
       return
     }
-    if (handler.state == GestureHandler.STATE_BEGAN || handler.state == GestureHandler.STATE_ACTIVE || handler.state == GestureHandler.STATE_UNDETERMINED) {
+    if (handler.state == GestureHandler.STATE_BEGAN || handler.state == GestureHandler.STATE_ACTIVE
+        || handler.state == GestureHandler.STATE_UNDETERMINED || handler.view != null) {
       if (handler.usesDeviceEvents) {
         val data = RNGestureHandlerPointerEvent.createEventData(handler)
 

@@ -291,17 +291,13 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
     lastEventOffsetX = event.rawX - event.x
     lastEventOffsetY = event.rawY - event.y
 
-    if (needsPointerData) {
-      updatePointerData(event)
-    }
-
     onHandle(event)
     if (event != origEvent) {
       event.recycle()
     }
   }
 
-  private fun updatePointerData(event: MotionEvent) {
+  fun updatePointerData(event: MotionEvent) {
     trackedPointers?.let { trackedPointers ->
       pointerEventPayload = null
 

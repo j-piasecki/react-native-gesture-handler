@@ -188,6 +188,8 @@
   }
   
   _trackedPointersCount = 0;
+  
+  [_gestureHandler reset];
 }
 
 - (void)sendEvent

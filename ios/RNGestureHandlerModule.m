@@ -162,6 +162,8 @@ RCT_EXPORT_METHOD(handleClearJSResponder)
   if (handler != nil) {
     if (state == 1) {
       handler.recognizer.state = UIGestureRecognizerStateFailed;
+    } else if (state == 2) {
+      handler.recognizer.state = UIGestureRecognizerStatePossible;
     } else if (state == 3) {
       handler.recognizer.state = UIGestureRecognizerStateCancelled;
     } else if (state == 4) {
@@ -169,6 +171,7 @@ RCT_EXPORT_METHOD(handleClearJSResponder)
     } else if (state == 5) {
       handler.recognizer.state = UIGestureRecognizerStateEnded;
     }
+    [handler handleGesture:handler.recognizer];
   }
 }
 

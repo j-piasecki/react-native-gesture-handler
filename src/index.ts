@@ -72,6 +72,7 @@ export {
   SimultaneousGestureType as SimultaneousGesture,
   ExclusiveGestureType as ExclusiveGesture,
 } from './handlers/gestures/gestureComposition';
+export { GestureStateManagerType } from './handlers/gestures/gestureStateManager';
 export { NativeViewGestureHandler } from './handlers/NativeViewGestureHandler';
 export type {
   RawButtonProps,

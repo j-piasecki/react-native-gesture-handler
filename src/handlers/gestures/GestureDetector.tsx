@@ -27,6 +27,10 @@ import {
 import { tapGestureHandlerProps } from '../TapGestureHandler';
 import { State } from '../../State';
 import { ComposedGesture } from './gestureComposition';
+import {
+  GestureStateManager,
+  GestureStateManagerType,
+} from './gestureStateManager';
 
 const ALLOWED_PROPS = [
   ...baseGestureHandlerWithMonitorProps,
@@ -270,14 +274,14 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
       | UnwrappedGestureHandlerStateChangeEvent
       | UnwrappedGestureHandlerEvent
       | UnwrappedGestureHandlerPointerEvent,
-    success?: boolean
+    ...args: any[]
   ) {
     'worklet';
     const handler = getHandler(type, gesture);
     if (gesture.isWorklet[type]) {
       // @ts-ignore Logic below makes sure the correct event is send to the
       // correct handler.
-      handler?.(event, success);
+      handler?.(event, ...args);
     } else if (handler) {
       console.warn('Animated gesture callback must be a worklet');
     }
@@ -289,6 +293,8 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
   const sharedHandlersCallbacks = Reanimated.useSharedValue<
     HandlerCallbacks<Record<string, unknown>>[] | null
   >(null);
+
+  const stateControllers: GestureStateManagerType[] = [];
 
   const callback = (
     event:
@@ -303,9 +309,6 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
       return;
     }
 
-    //Using for-of loop here causes crash, because worklets do not support it,
-    //consider changing this in future when support for it is added
-    //eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < currentCallback.length; i++) {
       const gesture = currentCallback[i];
 
@@ -334,7 +337,16 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
             runWorklet(CALLBACK_TYPE.END, gesture, event, false);
           }
         } else if (isPointerEvent(event)) {
-          runWorklet(CALLBACK_TYPE.POINTER, gesture, event);
+          if (!stateControllers[i]) {
+            stateControllers[i] = GestureStateManager.create(event.handlerTag);
+          }
+
+          runWorklet(
+            CALLBACK_TYPE.POINTER,
+            gesture,
+            event,
+            stateControllers[i]
+          );
         } else {
           runWorklet(CALLBACK_TYPE.UPDATE, gesture, event);
         }

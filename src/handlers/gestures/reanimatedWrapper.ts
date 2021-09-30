@@ -27,6 +27,7 @@ let Reanimated: {
     rebuild: boolean
   ) => unknown;
   useSharedValue: <T>(value: T) => SharedValue<T>;
+  setGestureState: (handlerTag: number, newState: number) => void;
 };
 
 try {

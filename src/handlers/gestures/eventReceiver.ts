@@ -7,9 +7,29 @@ import {
 } from '../gestureHandlerCommon';
 import { findHandler } from '../handlersRegistry';
 import { BaseGesture } from './gesture';
+import { GestureStateManagerType } from './gestureStateManager';
 
 let gestureHandlerEventSubscription: EmitterSubscription | null = null;
 let gestureHandlerStateChangeEventSubscription: EmitterSubscription | null = null;
+
+const dummyStateManager: GestureStateManagerType = {
+  tryActivate: () => {
+    console.warn(
+      'You have to use the animatedGesture prop in order to control the state of the gesture.'
+    );
+  },
+  tryEnd: () => {
+    console.warn(
+      'You have to use the animatedGesture prop in order to control the state of the gesture.'
+    );
+  },
+  tryFail: () => {
+    console.warn(
+      'You have to use the animatedGesture prop in order to control the state of the gesture.'
+    );
+  },
+};
+
 function isStateChangeEvent(
   event:
     | UnwrappedGestureHandlerEvent
@@ -61,7 +81,7 @@ function onGestureHandlerEvent(
         handler.handlers.onEnd?.(event, false);
       }
     } else if (isPointerChangeEvent(event)) {
-      handler.handlers?.onPointerEvent?.(event);
+      handler.handlers?.onPointerEvent?.(event, dummyStateManager);
     } else {
       handler.handlers.onUpdate?.(event);
     }

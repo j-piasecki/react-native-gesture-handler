@@ -8,7 +8,6 @@ import {
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  setGestureState,
 } from 'react-native-reanimated';
 
 interface Pointer {
@@ -42,6 +41,7 @@ export default function Example() {
   const active = useSharedValue(false);
 
   for (let i = 0; i < 12; i++) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     trackedPointers[i] = useSharedValue<Pointer>({
       visible: false,
       x: 0,
@@ -50,7 +50,7 @@ export default function Example() {
   }
 
   const gesture = Gesture.Custom()
-    .onPointerEvent((e) => {
+    .onPointerEvent((e, manager) => {
       'worklet';
       if (e.eventType === EventType.POINTER_DOWN) {
         for (const pointer of e.pointerData) {
@@ -61,8 +61,8 @@ export default function Example() {
           };
         }
 
-        if (e.numberOfPointers >= 3) {
-          setGestureState(e.handlerTag, 4);
+        if (e.numberOfPointers >= 2) {
+          manager.tryActivate();
         }
       } else if (
         e.eventType === EventType.POINTER_UP ||
@@ -77,7 +77,7 @@ export default function Example() {
         }
 
         if (e.numberOfPointers === 0) {
-          setGestureState(e.handlerTag, 5);
+          manager.tryEnd();
         }
       } else if (e.eventType === EventType.POINTER_MOVE) {
         for (const pointer of e.pointerData) {
@@ -89,11 +89,11 @@ export default function Example() {
         }
       }
     })
-    .onStart((e) => {
+    .onStart(() => {
       'worklet';
       active.value = true;
     })
-    .onEnd((e, success) => {
+    .onEnd(() => {
       'worklet';
       active.value = false;
     });
@@ -102,6 +102,7 @@ export default function Example() {
     <GestureDetector animatedGesture={gesture}>
       <Animated.View style={styles.container}>
         {trackedPointers.map((pointer, index) => (
+          // eslint-disable-next-line react/no-array-index-key
           <PointerElement pointer={pointer} active={active} key={index} />
         ))}
       </Animated.View>

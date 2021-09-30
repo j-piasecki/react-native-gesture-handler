@@ -1,5 +1,3 @@
-import { FlingGestureHandlerEventPayload } from '../FlingGestureHandler';
-import { ForceTouchGestureHandlerEventPayload } from '../ForceTouchGestureHandler';
 import {
   HitSlop,
   CommonGestureConfig,
@@ -8,12 +6,15 @@ import {
   UnwrappedGestureHandlerPointerEvent,
 } from '../gestureHandlerCommon';
 import { getNextHandlerTag } from '../handlersRegistry';
+import { GestureStateManagerType } from './gestureStateManager';
 import { LongPressGestureHandlerEventPayload } from '../LongPressGestureHandler';
 import { PanGestureHandlerEventPayload } from '../PanGestureHandler';
 import { PinchGestureHandlerEventPayload } from '../PinchGestureHandler';
 import { RotationGestureHandlerEventPayload } from '../RotationGestureHandler';
 import { TapGestureHandlerEventPayload } from '../TapGestureHandler';
 import { NativeViewGestureHandlerPayload } from '../NativeViewGestureHandler';
+import { FlingGestureHandlerEventPayload } from '../FlingGestureHandler';
+import { ForceTouchGestureHandlerEventPayload } from '../ForceTouchGestureHandler';
 
 export type GestureType =
   | BaseGesture<Record<string, unknown>>
@@ -50,7 +51,10 @@ export type HandlerCallbacks<EventPayloadT extends Record<string, unknown>> = {
     success: boolean
   ) => void;
   onUpdate?: (event: UnwrappedGestureHandlerEvent<EventPayloadT>) => void;
-  onPointerEvent?: (event: UnwrappedGestureHandlerPointerEvent) => void;
+  onPointerEvent?: (
+    event: UnwrappedGestureHandlerPointerEvent,
+    stateManager: GestureStateManagerType
+  ) => void;
   isWorklet: boolean[];
 };
 
@@ -114,7 +118,10 @@ export abstract class BaseGesture<
 
   protected isWorklet(
     callback:
-      | ((event: UnwrappedGestureHandlerPointerEvent) => void)
+      | ((
+          event: UnwrappedGestureHandlerPointerEvent,
+          stateManager: GestureStateManagerType
+        ) => void)
       | ((event: UnwrappedGestureHandlerEvent<EventPayloadT>) => void)
       | ((
           event: UnwrappedGestureHandlerStateChangeEvent<EventPayloadT>
@@ -157,7 +164,10 @@ export abstract class BaseGesture<
   }
 
   onPointerEvent(
-    callback: (event: UnwrappedGestureHandlerPointerEvent) => void
+    callback: (
+      event: UnwrappedGestureHandlerPointerEvent,
+      stateManager: GestureStateManagerType
+    ) => void
   ) {
     this.config.needsPointerData = true;
     this.handlers.onPointerEvent = callback;

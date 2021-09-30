@@ -336,7 +336,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)reset
 {
-    _lastState = RNGestureHandlerStateUndetermined;
+    if (!_needsPointerData || _pointerTracker.trackedPointersCount == 0) {
+        _lastState = RNGestureHandlerStateUndetermined;
+    }
 }
 
  - (BOOL)containsPointInView

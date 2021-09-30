@@ -13,6 +13,11 @@ let gestureHandlerEventSubscription: EmitterSubscription | null = null;
 let gestureHandlerStateChangeEventSubscription: EmitterSubscription | null = null;
 
 const dummyStateManager: GestureStateManagerType = {
+  tryBegin: () => {
+    console.warn(
+      'You have to use the animatedGesture prop in order to control the state of the gesture.'
+    );
+  },
   tryActivate: () => {
     console.warn(
       'You have to use the animatedGesture prop in order to control the state of the gesture.'

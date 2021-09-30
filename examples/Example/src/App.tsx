@@ -29,6 +29,7 @@ import PagerAndDrawer from './basic/pagerAndDrawer';
 import ForceTouch from './basic/forcetouch';
 
 import CustomGesture from './new_api/custom_gesture';
+import SquareGesture from './new_api/square_gesture';
 import ReanimatedSimple from './new_api/reanimated';
 import Camera from './new_api/camera';
 import Transformations from './new_api/transformations';
@@ -92,6 +93,7 @@ const EXAMPLES: ExamplesSection[] = [
     sectionTitle: 'New api',
     data: [
       { name: 'Custom gesture', component: CustomGesture },
+      { name: 'Square gesture', component: SquareGesture },
       {
         name: 'Simple interaction with Reanimated',
         component: ReanimatedSimple,

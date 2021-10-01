@@ -30,6 +30,7 @@ import ForceTouch from './basic/forcetouch';
 
 import CustomGesture from './new_api/custom_gesture';
 import SquareGesture from './new_api/square_gesture';
+import LongPressDrag from './new_api/longpress_drag';
 import ReanimatedSimple from './new_api/reanimated';
 import Camera from './new_api/camera';
 import Transformations from './new_api/transformations';
@@ -94,6 +95,7 @@ const EXAMPLES: ExamplesSection[] = [
     data: [
       { name: 'Custom gesture', component: CustomGesture },
       { name: 'Square gesture', component: SquareGesture },
+      { name: 'LongPress and drag', component: LongPressDrag },
       {
         name: 'Simple interaction with Reanimated',
         component: ReanimatedSimple,

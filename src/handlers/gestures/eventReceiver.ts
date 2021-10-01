@@ -77,11 +77,14 @@ function onGestureHandlerEvent(
         event.state === State.ACTIVE
       ) {
         handler.handlers.onStart?.(event);
-      } else if (event.oldState === State.ACTIVE && event.state === State.END) {
+      } else if (
+        (event.oldState === State.ACTIVE || event.oldState === State.BEGAN) &&
+        event.state === State.END
+      ) {
         handler.handlers.onEnd?.(event, true);
       } else if (
-        event.state === State.FAILED ||
-        event.state === State.CANCELLED
+        (event.state === State.FAILED || event.state === State.CANCELLED) &&
+        event.oldState !== event.state
       ) {
         handler.handlers.onEnd?.(event, false);
       }

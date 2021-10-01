@@ -326,7 +326,8 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
           ) {
             runWorklet(CALLBACK_TYPE.START, gesture, event);
           } else if (
-            event.oldState === State.ACTIVE &&
+            (event.oldState === State.ACTIVE ||
+              event.oldState === State.BEGAN) &&
             event.state === State.END
           ) {
             runWorklet(CALLBACK_TYPE.END, gesture, event, true);

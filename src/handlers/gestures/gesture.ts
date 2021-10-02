@@ -36,6 +36,7 @@ export interface BaseGestureConfig
   requireToFail?: GestureRef[];
   simultaneousWith?: GestureRef[];
   needsPointerData?: boolean;
+  manualActivation?: boolean;
 }
 
 export type HandlerCallbacks<EventPayloadT extends Record<string, unknown>> = {
@@ -188,6 +189,11 @@ export abstract class BaseGesture<
 
   hitSlop(hitSlop: HitSlop) {
     this.config.hitSlop = hitSlop;
+    return this;
+  }
+
+  manualActivation(manualActivation: boolean) {
+    this.config.manualActivation = manualActivation;
     return this;
   }
 

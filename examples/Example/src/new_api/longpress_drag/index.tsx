@@ -43,7 +43,7 @@ function Ball() {
 
   const start = useSharedValue({ x: 0, y: 0 });
   const gesture = Gesture.Pan()
-    .minDistance(10000)
+    .manualActivation(true)
     .onPointerEvent((e, state) => {
       'worklet';
       if (e.eventType === EventType.POINTER_DOWN) {

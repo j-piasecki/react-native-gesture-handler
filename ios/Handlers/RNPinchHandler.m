@@ -20,10 +20,18 @@
 
 - (id)initWithGestureHandler:(RNGestureHandler *)gestureHandler
 {
-  if ((self = [super initWithTarget:gestureHandler action:@selector(handleGesture:)])) {
+  if ((self = [super initWithTarget:self action:@selector(handleGesture:)])) {
     _gestureHandler = gestureHandler;
   }
   return self;
+}
+
+- (void)handleGesture:(UIGestureRecognizer *)recognizer
+{
+  if (self.state == UIGestureRecognizerStateBegan) {
+    self.scale = 1;
+  }
+  [_gestureHandler handleGesture:recognizer];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event

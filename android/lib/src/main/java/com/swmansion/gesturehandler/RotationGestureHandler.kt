@@ -6,8 +6,10 @@ import kotlin.math.abs
 
 class RotationGestureHandler : GestureHandler<RotationGestureHandler>() {
   private var rotationGestureDetector: RotationGestureDetector? = null
-  var rotation = 0.0
-    private set
+  private var startRotation = 0.0
+  private var currentRotation = 0.0
+  val rotation
+    get() = currentRotation - startRotation
   var velocity = 0.0
     private set
 
@@ -23,13 +25,13 @@ class RotationGestureHandler : GestureHandler<RotationGestureHandler>() {
   private val gestureListener: OnRotationGestureListener = object : OnRotationGestureListener {
     override fun onRotation(detector: RotationGestureDetector): Boolean {
       val prevRotation: Double = rotation
-      rotation += detector.rotation
+      currentRotation += detector.rotation
       val delta = detector.timeDelta
       if (delta > 0) {
         velocity = (rotation - prevRotation) / delta
       }
       if (abs(rotation) >= ROTATION_RECOGNITION_THRESHOLD && state == STATE_BEGAN) {
-        activate()
+        activateIfNotManual()
       }
       return true
     }
@@ -44,7 +46,8 @@ class RotationGestureHandler : GestureHandler<RotationGestureHandler>() {
   override fun onHandle(event: MotionEvent) {
     if (state == STATE_UNDETERMINED) {
       velocity = 0.0
-      rotation = 0.0
+      currentRotation = 0.0
+      startRotation = 0.0
       rotationGestureDetector = RotationGestureDetector(gestureListener)
       begin()
     }
@@ -58,10 +61,15 @@ class RotationGestureHandler : GestureHandler<RotationGestureHandler>() {
     }
   }
 
+  override fun beforeActivation() {
+    startRotation = currentRotation
+  }
+
   override fun onReset() {
     rotationGestureDetector = null
     velocity = 0.0
-    rotation = 0.0
+    currentRotation = 0.0
+    startRotation = 0.0
   }
 
   companion object {

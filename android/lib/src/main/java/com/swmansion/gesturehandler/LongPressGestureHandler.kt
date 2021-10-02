@@ -43,9 +43,9 @@ class LongPressGestureHandler(context: Context) : GestureHandler<LongPressGestur
       startY = event.rawY
       handler = Handler()
       if (minDurationMs > 0) {
-        handler!!.postDelayed({ activate() }, minDurationMs)
+        handler!!.postDelayed({ activateIfNotManual() }, minDurationMs)
       } else if (minDurationMs == 0L) {
-        activate()
+        activateIfNotManual()
       }
     }
     if (event.actionMasked == MotionEvent.ACTION_UP) {

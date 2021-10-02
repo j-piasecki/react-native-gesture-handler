@@ -27,6 +27,9 @@ class RNGestureHandlerModule(reactContext: ReactApplicationContext?)
       if (config.hasKey(KEY_ENABLED)) {
         handler.setEnabled(config.getBoolean(KEY_ENABLED))
       }
+      if (config.hasKey(KEY_MANUAL_ACTIVATION)) {
+        handler.setManualActivation(config.getBoolean(KEY_MANUAL_ACTIVATION))
+      }
       if (config.hasKey(KEY_NEEDS_POINTER_DATA)) {
         handler.needsPointerData = config.getBoolean(KEY_NEEDS_POINTER_DATA)
       }
@@ -600,6 +603,7 @@ class RNGestureHandlerModule(reactContext: ReactApplicationContext?)
     private const val KEY_SHOULD_CANCEL_WHEN_OUTSIDE = "shouldCancelWhenOutside"
     private const val KEY_ENABLED = "enabled"
     private const val KEY_NEEDS_POINTER_DATA = "needsPointerData"
+    private const val KEY_MANUAL_ACTIVATION = "manualActivation"
     private const val KEY_HIT_SLOP = "hitSlop"
     private const val KEY_HIT_SLOP_LEFT = "left"
     private const val KEY_HIT_SLOP_TOP = "top"

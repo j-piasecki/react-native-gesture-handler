@@ -51,6 +51,8 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
   var lastAbsolutePositionY = 0f
     private set
 
+  private var manualActivation = false
+
   private var lastEventOffsetX = 0f
   private var lastEventOffsetY = 0f
   private var shouldCancelWhenOutside = false
@@ -90,6 +92,7 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
   open fun resetConfig() {
     needsPointerData = false
     shouldCancelWhenOutside = false
+    manualActivation = false;
     isEnabled = true
     hitSlop = null
   }
@@ -105,6 +108,9 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
 
   fun setShouldCancelWhenOutside(shouldCancelWhenOutside: Boolean): ConcreteGestureHandlerT =
     applySelf { this.shouldCancelWhenOutside = shouldCancelWhenOutside }
+
+  fun setManualActivation(manualActivation: Boolean): ConcreteGestureHandlerT =
+      applySelf { this.manualActivation = manualActivation }
 
   fun setEnabled(enabled: Boolean): ConcreteGestureHandlerT = applySelf {
     if (view != null) {
@@ -517,6 +523,12 @@ open class GestureHandler<ConcreteGestureHandlerT : GestureHandler<ConcreteGestu
       beforeActivation()
       moveToState(STATE_ACTIVE)
       afterActivation()
+    }
+  }
+
+  fun activateIfNotManual() {
+    if (!manualActivation) {
+      activate()
     }
   }
 

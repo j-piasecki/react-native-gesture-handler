@@ -64,7 +64,7 @@ class NativeViewGestureHandler : GestureHandler<NativeViewGestureHandler>() {
     if (event.actionMasked == MotionEvent.ACTION_UP) {
       view.onTouchEvent(event)
       if ((state == STATE_UNDETERMINED || state == STATE_BEGAN) && view.isPressed) {
-        activate()
+        activateIfNotManual()
       }
       end()
     } else if (state == STATE_UNDETERMINED || state == STATE_BEGAN) {
@@ -72,11 +72,11 @@ class NativeViewGestureHandler : GestureHandler<NativeViewGestureHandler>() {
         shouldActivateOnStart -> {
           tryIntercept(view, event)
           view.onTouchEvent(event)
-          activate()
+          activateIfNotManual()
         }
         tryIntercept(view, event) -> {
           view.onTouchEvent(event)
-          activate()
+          activateIfNotManual()
         }
         state != STATE_BEGAN -> {
           begin()

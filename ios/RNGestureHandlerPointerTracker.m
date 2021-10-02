@@ -1,5 +1,6 @@
 #import "RNGestureHandlerPointerTracker.h"
 #import "RNGestureHandler.h"
+#import "RNManualActivationRecognizer.h"
 
 #import <React/UIView+React.h>
 
@@ -7,6 +8,8 @@
   __weak RNGestureHandler *_gestureHandler;
   UITouch *_trackedPointers[MAX_POINTERS_COUNT];
   int _trackedPointersCount;
+  BOOL _requireManualActivation;
+  RNManualActivationRecognizer *_manualActivationRecognizer;
 }
 
 - (id)initWithGestureHandler:(id)gestureHandler
@@ -14,6 +17,8 @@
   _gestureHandler = gestureHandler;
   _trackedPointersCount = 0;
   _pointerData = nil;
+  _manualActivationRecognizer = nil;
+  _requireManualActivation = NO;
   
   for (int i = 0; i < MAX_POINTERS_COUNT; i++) {
     _trackedPointers[i] = nil;
@@ -188,8 +193,52 @@
   }
   
   _trackedPointersCount = 0;
-  
   [_gestureHandler reset];
+  
+  if (_manualActivationRecognizer != nil) {
+    [_manualActivationRecognizer fail];
+    [_manualActivationRecognizer handleReset];
+  }
+}
+
+- (void)setManualActivation
+{
+  _requireManualActivation = YES;
+  _manualActivationRecognizer = [[RNManualActivationRecognizer alloc] initWithGestureHandler:_gestureHandler];
+
+  if (_gestureHandler.recognizer.view != nil) {
+    [_gestureHandler.recognizer.view addGestureRecognizer:_manualActivationRecognizer];
+  }
+}
+
+- (void)resetManualActivation
+{
+  _requireManualActivation = NO;
+  if (_manualActivationRecognizer != nil) {
+    [_manualActivationRecognizer.view removeGestureRecognizer:_manualActivationRecognizer];
+    _manualActivationRecognizer = nil;
+  }
+}
+
+- (void)bindManualActivationToView:(UIView *)view
+{
+  if (_manualActivationRecognizer != nil) {
+    [view addGestureRecognizer:_manualActivationRecognizer];
+  }
+}
+
+- (void)unbindManualActivation
+{
+  if (_manualActivationRecognizer != nil) {
+    [_manualActivationRecognizer.view removeGestureRecognizer:_manualActivationRecognizer];
+  }
+}
+
+- (void)tryManualActivation
+{
+  if (_manualActivationRecognizer != nil) {
+    [_manualActivationRecognizer fail];
+  }
 }
 
 - (void)sendEvent

@@ -167,6 +167,7 @@ RCT_EXPORT_METHOD(handleClearJSResponder)
     } else if (state == 3) {
       handler.recognizer.state = UIGestureRecognizerStateCancelled;
     } else if (state == 4) {
+      [handler tryForceActivate];
       handler.recognizer.state = UIGestureRecognizerStateBegan;
     } else if (state == 5) {
       handler.recognizer.state = UIGestureRecognizerStateEnded;

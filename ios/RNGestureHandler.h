@@ -73,6 +73,7 @@ if (value != nil) { recognizer.prop = [RCTConvert type:value]; }\
 - (RNGestureHandlerState)state;
 - (nullable RNGestureHandlerEventExtraData *)eventExtraData:(nonnull id)recognizer;
 
+- (void)tryForceActivate;
 - (void)reset;
 - (void)sendEventsInState:(RNGestureHandlerState)state
            forViewWithTag:(nonnull NSNumber *)reactTag

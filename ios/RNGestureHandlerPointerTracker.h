@@ -11,6 +11,7 @@
 @property (nonatomic) RNEventType eventType;
 @property (nonatomic) NSArray<NSDictionary *> *pointerData;
 @property (nonatomic) int trackedPointersCount;
+@property (nonatomic) BOOL requireManualActivation;
 
 - (id)initWithGestureHandler:(RNGestureHandler*)gestureHandler;
 
@@ -19,5 +20,10 @@
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
 - (void)reset;
+- (void)resetManualActivation;
+- (void)setManualActivation;
+- (void)bindManualActivationToView:(UIView *)view;
+- (void)unbindManualActivation;
+- (void)tryManualActivation;
 
 @end

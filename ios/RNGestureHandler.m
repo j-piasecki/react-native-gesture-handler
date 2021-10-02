@@ -1,4 +1,5 @@
 #import "RNGestureHandler.h"
+#import "RNManualActivationRecognizer.h"
 
 #import "Handlers/RNNativeViewHandler.h"
 
@@ -96,11 +97,13 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
   _handlersToWaitFor = nil;
   _simultaneousHandlers = nil;
   _hitSlop = RNGHHitSlopEmpty;
+  
+  [_pointerTracker resetManualActivation];
 }
 
 - (void)configure:(NSDictionary *)config
 {
-  [self resetConfig];
+    [self resetConfig];
     _handlersToWaitFor = [RCTConvert NSNumberArray:config[@"waitFor"]];
     _simultaneousHandlers = [RCTConvert NSNumberArray:config[@"simultaneousHandlers"]];
 
@@ -117,6 +120,11 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
     prop = config[@"needsPointerData"];
     if (prop != nil) {
         _needsPointerData = [RCTConvert BOOL:prop];
+    }
+  
+    prop = config[@"manualActivation"];
+    if (prop != nil && [RCTConvert BOOL:prop]) {
+        [_pointerTracker setManualActivation];
     }
 
     prop = config[@"hitSlop"];
@@ -157,12 +165,21 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
     view.userInteractionEnabled = YES;
     self.recognizer.delegate = self;
     [view addGestureRecognizer:self.recognizer];
+  
+    [_pointerTracker bindManualActivationToView:view];
 }
 
 - (void)unbindFromView
 {
     [self.recognizer.view removeGestureRecognizer:self.recognizer];
     self.recognizer.delegate = nil;
+  
+    [_pointerTracker unbindManualActivation];
+}
+
+- (void)tryForceActivate
+{
+  [_pointerTracker tryManualActivation];
 }
 
 - (RNGestureHandlerEventExtraData *)eventExtraData:(UIGestureRecognizer *)recognizer

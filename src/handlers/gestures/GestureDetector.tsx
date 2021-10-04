@@ -271,6 +271,8 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
         return gesture.onPointerUp;
       case CALLBACK_TYPE.POINTER_CANCELLED:
         return gesture.onPointerCancelled;
+      case CALLBACK_TYPE.POINTER_CHANGE:
+        return gesture.onPointerChange;
     }
   }
 
@@ -348,6 +350,13 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
           if (!stateControllers[i]) {
             stateControllers[i] = GestureStateManager.create(event.handlerTag);
           }
+
+          runWorklet(
+            CALLBACK_TYPE.POINTER_CHANGE,
+            gesture,
+            event,
+            stateControllers[i]
+          );
 
           switch (event.eventType) {
             case EventType.POINTER_DOWN:

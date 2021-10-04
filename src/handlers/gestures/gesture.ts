@@ -61,6 +61,7 @@ export type HandlerCallbacks<EventPayloadT extends Record<string, unknown>> = {
   onPointerMove?: PointerEventHandlerType;
   onPointerUp?: PointerEventHandlerType;
   onPointerCancelled?: PointerEventHandlerType;
+  onPointerChange?: PointerEventHandlerType;
   isWorklet: boolean[];
 };
 
@@ -73,6 +74,7 @@ export const CALLBACK_TYPE = {
   POINTER_MOVE: 6,
   POINTER_UP: 7,
   POINTER_CANCELLED: 8,
+  POINTER_CHANGE: 9,
 } as const;
 
 // Allow using CALLBACK_TYPE as object and type
@@ -203,6 +205,16 @@ export abstract class BaseGesture<
     this.config.needsPointerData = true;
     this.handlers.onPointerCancelled = callback;
     this.handlers.isWorklet[CALLBACK_TYPE.POINTER_CANCELLED] = this.isWorklet(
+      callback
+    );
+
+    return this;
+  }
+
+  onPointerChange(callback: PointerEventHandlerType) {
+    this.config.needsPointerData = true;
+    this.handlers.onPointerChange = callback;
+    this.handlers.isWorklet[CALLBACK_TYPE.POINTER_CHANGE] = this.isWorklet(
       callback
     );
 

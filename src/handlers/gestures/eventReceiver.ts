@@ -90,6 +90,8 @@ function onGestureHandlerEvent(
         handler.handlers.onEnd?.(event, false);
       }
     } else if (isPointerChangeEvent(event)) {
+      handler.handlers?.onPointerChange?.(event, dummyStateManager);
+
       switch (event.eventType) {
         case EventType.POINTER_DOWN:
           handler.handlers?.onPointerDown?.(event, dummyStateManager);

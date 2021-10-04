@@ -19,5 +19,6 @@
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
 - (void)reset;
+- (void)cancelPointers;
 
 @end

@@ -170,25 +170,33 @@
     // turns out that the gesture may be made to fail without calling touchesCancelled in that case there
     // are still tracked pointers but the recognizer state is already set to UIGestureRecognizerStateFailed
     // we need to clear the pointers and send info about their cancellation
-    int registeredTouches = [self registeredTouchesCount];
+    [self cancelPointers];
+  }
+  
+  [_gestureHandler reset];
+}
+
+- (void)cancelPointers
+{
+  int registeredTouches = [self registeredTouchesCount];
+  
+  if (registeredTouches > 0) {
     int nextIndex = 0;
     NSDictionary *data[registeredTouches];
     
     for (int i = 0; i < MAX_POINTERS_COUNT; i++) {
       UITouch *touch = _trackedPointers[i];
       if (touch != nil) {
-        [self unregisterTouch:touch];
         data[nextIndex++] = [self extractPointerData:i forTouch:touch];
+        [self unregisterTouch:touch];
       }
     }
     
     _eventType = RNEventTypeCancelled;
     _pointerData = [[NSArray alloc] initWithObjects:data count:registeredTouches];
     [self sendEvent];
+    _trackedPointersCount = 0;
   }
-  
-  _trackedPointersCount = 0;
-  [_gestureHandler reset];
 }
 
 - (void)sendEvent

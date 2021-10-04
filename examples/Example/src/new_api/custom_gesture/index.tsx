@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native';
 import {
   GestureDetector,
   Gesture,
-  EventType,
+  GestureStateManagerType,
+  UnwrappedGestureHandlerPointerEvent,
 } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -49,46 +50,51 @@ export default function Example() {
     });
   }
 
+  const pointerEnd = (
+    e: UnwrappedGestureHandlerPointerEvent,
+    manager: GestureStateManagerType
+  ) => {
+    'worklet';
+    for (const pointer of e.pointerData) {
+      trackedPointers[pointer.pointerId].value = {
+        visible: false,
+        x: pointer.x,
+        y: pointer.y,
+      };
+    }
+
+    if (e.numberOfPointers === 0) {
+      manager.tryEnd();
+    }
+  };
+
   const gesture = Gesture.Custom()
-    .onPointerEvent((e, manager) => {
+    .onPointerDown((e, manager) => {
       'worklet';
-      if (e.eventType === EventType.POINTER_DOWN) {
-        for (const pointer of e.pointerData) {
-          trackedPointers[pointer.pointerId].value = {
-            visible: true,
-            x: pointer.x,
-            y: pointer.y,
-          };
-        }
+      for (const pointer of e.pointerData) {
+        trackedPointers[pointer.pointerId].value = {
+          visible: true,
+          x: pointer.x,
+          y: pointer.y,
+        };
+      }
 
-        if (e.numberOfPointers >= 2) {
-          manager.tryActivate();
-        }
-      } else if (
-        e.eventType === EventType.POINTER_UP ||
-        e.eventType === EventType.POINTER_CANCELLED
-      ) {
-        for (const pointer of e.pointerData) {
-          trackedPointers[pointer.pointerId].value = {
-            visible: false,
-            x: pointer.x,
-            y: pointer.y,
-          };
-        }
-
-        if (e.numberOfPointers === 0) {
-          manager.tryEnd();
-        }
-      } else if (e.eventType === EventType.POINTER_MOVE) {
-        for (const pointer of e.pointerData) {
-          trackedPointers[pointer.pointerId].value = {
-            visible: true,
-            x: pointer.x,
-            y: pointer.y,
-          };
-        }
+      if (e.numberOfPointers >= 2) {
+        manager.tryActivate();
       }
     })
+    .onPointerMove((e, _manager) => {
+      'worklet';
+      for (const pointer of e.pointerData) {
+        trackedPointers[pointer.pointerId].value = {
+          visible: true,
+          x: pointer.x,
+          y: pointer.y,
+        };
+      }
+    })
+    .onPointerUp(pointerEnd)
+    .onPointerCancelled(pointerEnd)
     .onStart(() => {
       'worklet';
       active.value = true;

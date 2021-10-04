@@ -1,10 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import {
-  GestureDetector,
-  Gesture,
-  EventType,
-} from 'react-native-gesture-handler';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -44,21 +40,24 @@ function Ball() {
   const start = useSharedValue({ x: 0, y: 0 });
   const gesture = Gesture.Pan()
     .manualActivation(true)
-    .onPointerEvent((e, state) => {
+    .onPointerDown((_e, state) => {
       'worklet';
-      if (e.eventType === EventType.POINTER_DOWN) {
-        state.tryBegin();
-      } else if (
-        e.eventType === EventType.POINTER_UP ||
-        e.eventType === EventType.POINTER_CANCELLED
-      ) {
-        state.tryEnd();
-      } else if (e.eventType === EventType.POINTER_MOVE) {
-        if (Date.now() - startTime.value > 500) {
-          state.tryActivate();
-        } else {
-          state.tryFail();
-        }
+      state.tryBegin();
+    })
+    .onPointerUp((_e, state) => {
+      'worklet';
+      state.tryEnd();
+    })
+    .onPointerCancelled((_e, state) => {
+      'worklet';
+      state.tryEnd();
+    })
+    .onPointerMove((_e, state) => {
+      'worklet';
+      if (Date.now() - startTime.value > 500) {
+        state.tryActivate();
+      } else {
+        state.tryFail();
       }
     })
     .onBegan(() => {

@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native';
 import {
   GestureDetector,
   Gesture,
-  EventType,
+  UnwrappedGestureHandlerPointerEvent,
+  GestureStateManagerType,
 } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -14,62 +15,67 @@ export default function Example() {
   const state = useSharedValue(0);
   const active = useSharedValue(false);
 
+  const pointerEnd = (
+    e: UnwrappedGestureHandlerPointerEvent,
+    manager: GestureStateManagerType
+  ) => {
+    'worklet';
+    if (e.pointerData.find((e) => e.pointerId === 0)) {
+      if (e.state === 4) {
+        manager.tryEnd();
+      } else {
+        manager.tryFail();
+      }
+    }
+  };
+
   const gesture = Gesture.Custom()
-    .onPointerEvent((e, manager) => {
+    .onPointerDown((e, manager) => {
       'worklet';
-      if (e.eventType === EventType.POINTER_DOWN) {
-        if (e.pointerData.find((e) => e.pointerId === 0) !== undefined) {
-          state.value = 0;
-          manager.tryBegin();
-        }
-      } else if (
-        e.eventType === EventType.POINTER_UP ||
-        e.eventType === EventType.POINTER_CANCELLED
-      ) {
-        if (e.pointerData.find((e) => e.pointerId === 0)) {
-          if (e.state === 4) {
-            manager.tryEnd();
-          } else {
+      if (e.pointerData.find((e) => e.pointerId === 0) !== undefined) {
+        state.value = 0;
+        manager.tryBegin();
+      }
+    })
+    .onPointerUp(pointerEnd)
+    .onPointerCancelled(pointerEnd)
+    .onPointerMove((e, manager) => {
+      'worklet';
+      if (e.state === 4) {
+        return;
+      }
+      const pointer = e.pointerData.find((e) => e.pointerId === 0)!;
+      switch (state.value) {
+        case 0:
+          if (pointer?.x > 50 || pointer.y > 300) {
             manager.tryFail();
+          } else if (pointer.y > 250) {
+            state.value++;
           }
-        }
-      } else if (e.eventType === EventType.POINTER_MOVE) {
-        if (e.state === 4) {
-          return;
-        }
-        const pointer = e.pointerData.find((e) => e.pointerId === 0)!;
-        switch (state.value) {
-          case 0:
-            if (pointer?.x > 50 || pointer.y > 300) {
-              manager.tryFail();
-            } else if (pointer.y > 250) {
+          break;
+        case 1:
+          if (pointer.x > 300 || pointer.y > 300 || pointer.y < 250) {
+            manager.tryFail();
+          } else if (pointer.x > 250) {
+            state.value++;
+          }
+          break;
+        case 2:
+          if (pointer.x > 300 || pointer.x < 250 || pointer.y > 300) {
+            manager.tryFail();
+          } else {
+            if (pointer.y < 50) {
               state.value++;
             }
-            break;
-          case 1:
-            if (pointer.x > 300 || pointer.y > 300 || pointer.y < 250) {
-              manager.tryFail();
-            } else if (pointer.x > 250) {
-              state.value++;
-            }
-            break;
-          case 2:
-            if (pointer.x > 300 || pointer.x < 250 || pointer.y > 300) {
-              manager.tryFail();
-            } else {
-              if (pointer.y < 50) {
-                state.value++;
-              }
-            }
-            break;
-          case 3:
-            if (pointer.x > 300 || pointer.y > 50) {
-              manager.tryFail();
-            } else if (pointer.x < 50) {
-              manager.tryActivate();
-            }
-            break;
-        }
+          }
+          break;
+        case 3:
+          if (pointer.x > 300 || pointer.y > 50) {
+            manager.tryFail();
+          } else if (pointer.x < 50) {
+            manager.tryActivate();
+          }
+          break;
       }
     })
     .onBegan(() => {

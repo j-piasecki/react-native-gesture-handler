@@ -1,5 +1,6 @@
 import { DeviceEventEmitter, EmitterSubscription } from 'react-native';
 import { State } from '../../State';
+import { EventType } from '../../EventType';
 import {
   UnwrappedGestureHandlerEvent,
   UnwrappedGestureHandlerPointerEvent,
@@ -89,7 +90,20 @@ function onGestureHandlerEvent(
         handler.handlers.onEnd?.(event, false);
       }
     } else if (isPointerChangeEvent(event)) {
-      handler.handlers?.onPointerEvent?.(event, dummyStateManager);
+      switch (event.eventType) {
+        case EventType.POINTER_DOWN:
+          handler.handlers?.onPointerDown?.(event, dummyStateManager);
+          break;
+        case EventType.POINTER_MOVE:
+          handler.handlers?.onPointerDown?.(event, dummyStateManager);
+          break;
+        case EventType.POINTER_UP:
+          handler.handlers?.onPointerUp?.(event, dummyStateManager);
+          break;
+        case EventType.POINTER_CANCELLED:
+          handler.handlers?.onPointerCancelled?.(event, dummyStateManager);
+          break;
+      }
     } else {
       handler.handlers.onUpdate?.(event);
     }

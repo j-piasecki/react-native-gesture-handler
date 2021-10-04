@@ -54,11 +54,6 @@
   [super reset];
 }
 
-- (void)handleReset
-{
-  [self reset];
-}
-
 - (void)fail
 {
   self.enabled = NO;

@@ -416,7 +416,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
       
         if (_manualActivationRecognizer != nil) {
           [_manualActivationRecognizer fail];
-          [_manualActivationRecognizer handleReset];
+          [_manualActivationRecognizer reset];
         }
     }
 }

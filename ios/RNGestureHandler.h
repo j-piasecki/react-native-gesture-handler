@@ -63,6 +63,7 @@ if (value != nil) { recognizer.prop = [RCTConvert type:value]; }\
 @property (nonatomic) BOOL usesDeviceEvents;
 @property (nonatomic) BOOL shouldCancelWhenOutside;
 @property (nonatomic) BOOL needsPointerData;
+@property (nonatomic) BOOL requireManualActivation;
 
 - (void)bindToView:(nonnull UIView *)view;
 - (void)unbindFromView;

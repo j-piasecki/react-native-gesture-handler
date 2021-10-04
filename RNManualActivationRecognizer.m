@@ -37,8 +37,6 @@
   if (_activePointers == 0) {
     [self fail];
     [self reset];
-    
-    //_handler.recognizer.state = UIGestureRecognizerStateFailed;
   }
 }
 

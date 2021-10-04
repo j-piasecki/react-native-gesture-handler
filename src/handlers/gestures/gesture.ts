@@ -236,11 +236,6 @@ export abstract class BaseGesture<
     return this;
   }
 
-  manualActivation(manualActivation: boolean) {
-    this.config.manualActivation = manualActivation;
-    return this;
-  }
-
   simultaneousWithExternalGesture(...gestures: Exclude<GestureRef, number>[]) {
     for (const gesture of gestures) {
       this.addDependency('simultaneousWith', gesture);
@@ -280,6 +275,11 @@ export abstract class ContinousBaseGesture<
   ) {
     this.handlers.onUpdate = callback;
     this.handlers.isWorklet[CALLBACK_TYPE.UPDATE] = this.isWorklet(callback);
+    return this;
+  }
+
+  manualActivation(manualActivation: boolean) {
+    this.config.manualActivation = manualActivation;
     return this;
   }
 }

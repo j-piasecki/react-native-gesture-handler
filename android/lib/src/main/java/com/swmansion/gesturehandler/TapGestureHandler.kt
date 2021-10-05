@@ -84,7 +84,7 @@ class TapGestureHandler : GestureHandler<TapGestureHandler>() {
       handler!!.removeCallbacksAndMessages(null)
     }
     if (++tapsSoFar == numberOfTaps && currentMaxNumberOfPointers >= minNumberOfPointers) {
-      activateIfNotManual()
+      activate()
     } else {
       handler!!.postDelayed(failDelayed, maxDelayMs)
     }

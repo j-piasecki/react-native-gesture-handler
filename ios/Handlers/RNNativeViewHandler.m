@@ -80,6 +80,8 @@
     [super configure:config];
     _shouldActivateOnStart = [RCTConvert BOOL:config[@"shouldActivateOnStart"]];
     _disallowInterruption = [RCTConvert BOOL:config[@"disallowInterruption"]];
+  
+    [super resetManualActivation];
 }
 
 - (void)bindToView:(UIView *)view

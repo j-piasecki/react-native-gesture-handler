@@ -232,6 +232,8 @@ static const NSTimeInterval defaultMaxDuration = NAN;
     CGFloat dist = [RCTConvert CGFloat:prop];
     recognizer.maxDistSq = dist * dist;
   }
+  
+  [super resetManualActivation];
 }
 
 - (RNGestureHandlerEventExtraData *)eventExtraData:(UIGestureRecognizer *)recognizer{

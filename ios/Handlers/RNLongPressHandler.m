@@ -123,6 +123,8 @@
   if (prop != nil) {
     recognizer.allowableMovement = [RCTConvert CGFloat:prop];
   }
+  
+  [super resetManualActivation];
 }
 
 - (RNGestureHandlerState)state

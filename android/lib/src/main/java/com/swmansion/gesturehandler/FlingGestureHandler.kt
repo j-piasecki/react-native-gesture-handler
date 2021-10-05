@@ -45,7 +45,7 @@ class FlingGestureHandler : GestureHandler<FlingGestureHandler>() {
       direction and DIRECTION_DOWN != 0 &&
       event.rawY - startY > minAcceptableDelta)) {
     handler!!.removeCallbacksAndMessages(null)
-    activateIfNotManual()
+    activate()
     true
   } else {
     false

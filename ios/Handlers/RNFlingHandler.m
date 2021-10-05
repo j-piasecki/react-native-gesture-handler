@@ -84,6 +84,8 @@
         recognizer.numberOfTouchesRequired = [RCTConvert NSInteger:prop];
     }
 #endif
+  
+    [super resetManualActivation];
 }
 
 @end

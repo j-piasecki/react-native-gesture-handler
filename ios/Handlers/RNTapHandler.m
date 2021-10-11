@@ -12,8 +12,8 @@
 
 #import <React/RCTConvert.h>
 
-// RNBetterTapGestureRecognizer extends UIGestureRecognizer instead of UITapGestureRecognizer 
-// because the latter does not allow for parameters like maxDelay, maxDuration, minPointers, 
+// RNBetterTapGestureRecognizer extends UIGestureRecognizer instead of UITapGestureRecognizer
+// because the latter does not allow for parameters like maxDelay, maxDuration, minPointers,
 // maxDelta to be configured. Using our custom implementation of tap recognizer we are able
 // to support these.
 
@@ -36,6 +36,7 @@
   NSUInteger _tapsSoFar;
   CGPoint _initPosition;
   NSInteger _maxNumberOfTouches;
+  BOOL _skipNextFail;
 }
 
 static const NSUInteger defaultNumberOfTaps = 1;
@@ -55,6 +56,7 @@ static const NSTimeInterval defaultMaxDuration = NAN;
     _maxDeltaX = NAN;
     _maxDeltaY = NAN;
     _maxDistSq = NAN;
+    _skipNextFail = NO;
   }
   return self;
 }
@@ -75,7 +77,12 @@ static const NSTimeInterval defaultMaxDuration = NAN;
   [_gestureHandler.pointerTracker touchesBegan:touches withEvent:event];
   
   if (_tapsSoFar == 0) {
-    _initPosition = [self locationInView:self.view];
+    // this recognizer sends UNDETERMINED -> BEGAN state change event before gestureRecognizerShouldBegin
+    // is called (it resets the gesture handler), making it send whatever the last known state as oldState
+    // in the event. If we reset it here it correctly sends UNDETERMINED as oldState.
+    [_gestureHandler reset];
+    _initPosition = [self locationInView:self.view.window];
+    _skipNextFail = NO;
   }
   _tapsSoFar++;
   if (_tapsSoFar) {
@@ -118,7 +125,7 @@ static const NSTimeInterval defaultMaxDuration = NAN;
 }
 
 - (CGPoint)translationInView {
-  CGPoint currentPosition = [self locationInView:self.view];
+  CGPoint currentPosition = [self locationInView:self.view.window];
   return CGPointMake(currentPosition.x - _initPosition.x, currentPosition.y - _initPosition.y);
 }
 
@@ -137,7 +144,7 @@ static const NSTimeInterval defaultMaxDuration = NAN;
   if (TEST_MAX_IF_NOT_NAN(fabs(trans.y), _maxDeltaY)) {
     return YES;
   }
-  if (TEST_MAX_IF_NOT_NAN(fabs(trans.y * trans.y + trans.x + trans.x), _maxDistSq)) {
+  if (TEST_MAX_IF_NOT_NAN(fabs(trans.y * trans.y + trans.x * trans.x), _maxDistSq)) {
     return YES;
   }
   return NO;
@@ -168,9 +175,9 @@ static const NSTimeInterval defaultMaxDuration = NAN;
 - (void)reset
 {
   [_gestureHandler.pointerTracker reset];
-  
-  if (self.state == UIGestureRecognizerStateFailed) {
+  if (self.state == UIGestureRecognizerStateFailed && !_skipNextFail) {
     [self triggerAction];
+    _skipNextFail = YES;
   }
   [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(cancel) object:nil];
   _tapsSoFar = 0;
@@ -241,6 +248,19 @@ static const NSTimeInterval defaultMaxDuration = NAN;
     
     _lastData = [super eventExtraData:recognizer];
     return _lastData;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+  // UNDETERMINED -> BEGAN state change event is sent before this method is called,
+  // in RNGestureHandler it resets _lastSatate variable, making is seem like handler
+  // went from UNDETERMINED to BEGAN and then from UNDETERMINED to ACTIVE.
+  // This way we preserve _lastState between events and keep correct state flow.
+  RNGestureHandlerState savedState = _lastState;
+  BOOL originalResult = [super gestureRecognizerShouldBegin:gestureRecognizer];
+  _lastState = savedState;
+
+  return originalResult;
 }
 
 @end

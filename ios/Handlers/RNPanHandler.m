@@ -61,11 +61,6 @@
   return self;
 }
 
-- (void)triggerAction
-{
-  [_gestureHandler handleGesture:self];
-}
-
 - (void)setMinimumNumberOfTouches:(NSUInteger)minimumNumberOfTouches
 {
   _realMinimumNumberOfTouches = minimumNumberOfTouches;
@@ -73,7 +68,6 @@
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-  [_gestureHandler reset];
 #if !TARGET_OS_TV
   if (_hasCustomActivationCriteria) {
     // We use "minimumNumberOfTouches" property to prevent pan handler from recognizing
@@ -85,7 +79,6 @@
   }
 #endif
   [super touchesBegan:touches withEvent:event];
-  [self triggerAction];
 }
 
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
@@ -121,7 +114,6 @@
 
 - (void)reset
 {
-  [self triggerAction];
   self.enabled = YES;
   [super reset];
 }
@@ -264,15 +256,6 @@
     recognizer.minVelocitySq = velocity * velocity;
   }
   [recognizer updateHasCustomActivationCriteria];
-}
-
-- (BOOL) gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
-{
-  RNGestureHandlerState savedState = _lastState;
-  BOOL shouldBegin = [super gestureRecognizerShouldBegin:gestureRecognizer];
-  _lastState = savedState;
-  
-  return shouldBegin;
 }
 
 - (RNGestureHandlerEventExtraData *)eventExtraData:(UIPanGestureRecognizer *)recognizer

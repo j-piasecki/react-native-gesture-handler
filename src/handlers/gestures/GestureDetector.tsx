@@ -32,6 +32,7 @@ import { tapGestureHandlerProps } from '../TapGestureHandler';
 import { State } from '../../State';
 import { EventType } from '../../EventType';
 import { ComposedGesture } from './gestureComposition';
+import { runOnJS } from 'react-native-reanimated';
 
 const ALLOWED_PROPS = [
   ...baseGestureHandlerWithMonitorProps,
@@ -286,6 +287,12 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
     return CALLBACK_TYPE.UNDEFINED;
   }
 
+  function runCallbackOnJS(gesture: any, event: any, args: any[]) {
+    console.log(_WORKLET);
+    gesture.onUpdate(event);
+    //gesture?.(event); - to wyrzuca Value is undefined, expected an Object
+  }
+
   function runWorklet(
     type: CALLBACK_TYPE,
     gesture: HandlerCallbacks<Record<string, unknown>>,
@@ -294,7 +301,10 @@ function useAnimatedGesture(preparedGesture: GestureConfigReference) {
   ) {
     'worklet';
     const handler = getHandler(type, gesture);
-    if (gesture.isWorklet[type]) {
+    if (gesture.runOnJS[type] && handler) {
+      runOnJS(runCallbackOnJS)(gesture, event, args);
+      //runOnJS(runCallbackOnJS)(gesture.onUpdate, event, args); - to wyrzuca Value is undefined, expected an Object
+    } else if (gesture.isWorklet[type]) {
       // @ts-ignore Logic below makes sure the correct event is send to the
       // correct handler.
       handler?.(event, ...args);

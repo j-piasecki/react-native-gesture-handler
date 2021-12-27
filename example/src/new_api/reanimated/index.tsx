@@ -1,6 +1,10 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import {
+  GestureDetector,
+  Gesture,
+  Callback,
+} from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -25,27 +29,29 @@ function Ball() {
 
   const gesture = Gesture.Pan()
     .onBegin(() => {
-      'worklet';
       isPressed.value = true;
+      console.log('begin', _WORKLET);
     })
     .onUpdate((e) => {
-      'worklet';
       offset.value = {
         x: e.translationX + start.value.x,
         y: e.translationY + start.value.y,
       };
+
+      console.log('update', _WORKLET);
     })
     .onEnd(() => {
-      'worklet';
       start.value = {
         x: offset.value.x,
         y: offset.value.y,
       };
+      console.log('end', _WORKLET);
     })
     .onFinalize(() => {
-      'worklet';
       isPressed.value = false;
-    });
+      console.log('fin', _WORKLET);
+    })
+    .runOnJS([Callback.UPDATE]);
 
   return (
     <GestureDetector gesture={gesture}>

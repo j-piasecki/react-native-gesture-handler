@@ -66,6 +66,7 @@ export type HandlerCallbacks<EventPayloadT extends Record<string, unknown>> = {
   onTouchesUp?: TouchEventHandlerType;
   onTouchesCancelled?: TouchEventHandlerType;
   isWorklet: boolean[];
+  runOnJS: boolean[];
 };
 
 export const CALLBACK_TYPE = {
@@ -113,7 +114,8 @@ export abstract class BaseGesture<
   public config: BaseGestureConfig = {};
   public handlers: HandlerCallbacks<EventPayloadT> = {
     handlerTag: -1,
-    isWorklet: [false, false, false, false],
+    isWorklet: [],
+    runOnJS: [],
   };
 
   private addDependency(
@@ -229,6 +231,19 @@ export abstract class BaseGesture<
 
   hitSlop(hitSlop: HitSlop) {
     this.config.hitSlop = hitSlop;
+    return this;
+  }
+
+  runOnJS(callbacks?: CALLBACK_TYPE[]) {
+    if (callbacks === undefined) {
+      for (let i = 0; i < CALLBACK_TYPE.TOUCHES_CANCELLED; i++) {
+        this.handlers.runOnJS[i] = true;
+      }
+    } else {
+      callbacks.forEach((type) => {
+        this.handlers.runOnJS[type] = true;
+      });
+    }
     return this;
   }
 

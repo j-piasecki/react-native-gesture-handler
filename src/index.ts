@@ -47,6 +47,7 @@ export type {
   FlingGestureHandlerEventPayload,
   FlingGestureHandlerProps,
 } from './handlers/FlingGestureHandler';
+export { CALLBACK_TYPE as Callback } from './handlers/gestures/gesture';
 export { TapGestureHandler } from './handlers/TapGestureHandler';
 export { ForceTouchGestureHandler } from './handlers/ForceTouchGestureHandler';
 export { LongPressGestureHandler } from './handlers/LongPressGestureHandler';

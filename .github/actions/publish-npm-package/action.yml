@@ -80,16 +80,17 @@ runs:
     - name: Figure out the corrent npm tag
       shell: bash
       run: |
-        if [ "${{ inputs.is-commitly }}" = 'true' ]; then
+        if [ "${{ inputs.is-commitly }}" = "true" ]; then
           TAG_ARGUMENT="--tag nightly"
         else
-          if [ $(node ./scripts/release/should-be-latest.js ${{ steps.set-package-version.outputs.version }}) = 'true' ]; then
+          if [ $(node ./scripts/release/should-be-latest.js ${{ steps.set-package-version.outputs.version }}) = "true" ]; then
             TAG_ARGUMENT="--tag latest"
           else
             TAG_ARGUMENT=""
           fi
         fi
 
+        echo "Determined tag argument: $TAG_ARGUMENT"
         echo "tag-argument=$TAG_ARGUMENT" >> $GITHUB_OUTPUT
 
     - name: Publish npm package

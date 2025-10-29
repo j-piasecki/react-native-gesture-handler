@@ -3,10 +3,11 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   npm-build:
-    if: github.repository == 'software-mansion/react-native-gesture-handler'
+    # if: github.repository == 'software-mansion/react-native-gesture-handler'
     runs-on: ubuntu-latest
     permissions:
       contents: write

@@ -91,8 +91,7 @@ runs:
       if: inputs.dry-run == 'false'
       working-directory: packages/react-native-gesture-handler
       run: |
-        echo "Publishing package $PACKAGE_NAME to npm..."
-        # npm publish $PACKAGE_NAME --provenance ${{ steps.figure-out-npm-tag.outputs.tag-argument }}
+        npm publish $PACKAGE_NAME --provenance ${{ steps.figure-out-npm-tag.outputs.tag-argument }}
 
     - name: Don't publish if dry-run is true
       shell: bash

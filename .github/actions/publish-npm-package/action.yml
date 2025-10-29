@@ -29,6 +29,7 @@ runs:
       shell: bash
       run: |
         VERSION=$(node ./scripts/release/set-package-version.js ${{ inputs.is-commitly == 'true' && '--commitly' || '' }})
+        echo "Updated package version to $VERSION"
         echo "version=$VERSION" >> $GITHUB_OUTPUT
 
     - name: Create release tag
@@ -92,6 +93,12 @@ runs:
 
         echo "Determined tag argument: $TAG_ARGUMENT"
         echo "tag-argument=$TAG_ARGUMENT" >> $GITHUB_OUTPUT
+
+    - name: Print outputs
+      shell: bash
+      run: |
+        echo "Version to be published: ${{ steps.set-package-version.outputs.version }}"
+        echo "NPM tag argument: ${{ steps.figure-out-npm-tag.outputs.tag-argument }}"
 
     - name: Publish npm package
       shell: bash

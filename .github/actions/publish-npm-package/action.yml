@@ -17,10 +17,6 @@ runs:
         echo "YARN_ENABLE_HARDENED_MODE=0" >> $GITHUB_ENV
         echo "PACKAGE_NAME=PLACEHOLDER" >> $GITHUB_ENV
 
-    - name: Print env
-      shell: bash
-      run: echo "$YARN_ENABLE_HARDENED_MODE"
-
     - name: Setup Node
       uses: actions/setup-node@v6
       with:

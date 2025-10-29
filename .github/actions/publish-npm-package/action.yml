@@ -77,8 +77,9 @@ runs:
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: './packages/react-native-gesture-handler/${{ env.PACKAGE_NAME }}'
-    
-    - name: Figure out the corrent npm tag
+
+    - name: Figure out the correct npm tag
+      id: figure-out-npm-tag
       shell: bash
       run: |
         if [ "${{ inputs.is-commitly }}" = "true" ]; then

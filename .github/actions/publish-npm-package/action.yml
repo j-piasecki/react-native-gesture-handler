@@ -32,21 +32,6 @@ runs:
         echo "Updated package version to $VERSION"
         echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-    - name: Create release tag
-      if: inputs.is-commitly == 'false'
-      shell: bash
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git tag -a "v${{ steps.set-package-version.outputs.version }}" -m "Release v${{ steps.set-package-version.outputs.version }}"
-        
-        if [ "${{ inputs.dry-run }}" = 'false' ]; then
-          echo "Pushing tag to origin..."
-          git push origin "v${{ steps.set-package-version.outputs.version }}"
-        else
-          echo "Dry run mode: skipping git push"
-        fi
-
     # Ensure npm 11.5.1 or later is installed for OIDC
     - name: Update npm
       shell: bash
@@ -106,10 +91,47 @@ runs:
       if: inputs.dry-run == 'false'
       working-directory: packages/react-native-gesture-handler
       run: |
-        npm publish $PACKAGE_NAME --provenance ${{ steps.figure-out-npm-tag.outputs.tag-argument }}
+        echo "Publishing package $PACKAGE_NAME to npm..."
+        # npm publish $PACKAGE_NAME --provenance ${{ steps.figure-out-npm-tag.outputs.tag-argument }}
 
     - name: Don't publish if dry-run is true
       shell: bash
       if: inputs.dry-run == 'true'
       run: |
         echo "At this point, the following command would have been run: npm publish $PACKAGE_NAME --provenance ${{ steps.figure-out-npm-tag.outputs.tag-argument }}"
+
+    - name: Configure git
+      if: inputs.is-commitly == 'false'
+      shell: bash
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+    - name: Create release commit
+      if: inputs.is-commitly == 'false'
+      shell: bash
+      run: |
+        git add packages/react-native-gesture-handler/package.json
+        git commit -m "Release v${{ steps.set-package-version.outputs.version }}"
+        
+        if [ "${{ inputs.dry-run }}" = 'false' ]; then
+          echo "Pushing release commit to origin..."
+          git push
+        else
+          echo "Dry run mode: skipping git push"
+        fi
+
+    - name: Create release tag
+      if: inputs.is-commitly == 'false'
+      shell: bash
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git tag -a "v${{ steps.set-package-version.outputs.version }}" -m "Release v${{ steps.set-package-version.outputs.version }}"
+        
+        if [ "${{ inputs.dry-run }}" = 'false' ]; then
+          echo "Pushing tag to origin..."
+          git push origin "v${{ steps.set-package-version.outputs.version }}"
+        else
+          echo "Dry run mode: skipping git push"
+        fi

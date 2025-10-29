@@ -14,9 +14,6 @@ runs:
     YARN_ENABLE_HARDENED_MODE: 0
     PACKAGE_NAME: PLACEHOLDER # Will be reassigned later on.
   steps:
-    - name: Check out
-      uses: actions/checkout@v4
-
     - name: Print env
       run: echo "$YARN_ENABLE_HARDENED_MODE"
 

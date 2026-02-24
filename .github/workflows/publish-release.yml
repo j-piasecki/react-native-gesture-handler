@@ -1,11 +1,11 @@
 name: Publish release to npm
 on:
   # For commitlies
-  push:
-    branches:
-      - main
-    paths:
-      - packages/react-native-gesture-handler/**
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - packages/react-native-gesture-handler/**
   # For manual releases
   workflow_dispatch:
     inputs:
@@ -43,17 +43,32 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
+      - name: Set up environment
+        shell: bash
+        run: |
+          echo "YARN_ENABLE_HARDENED_MODE=0" >> $GITHUB_ENV
+  
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'yarn'
+          registry-url: https://registry.npmjs.org/
+
       - name: Publish manual release
         if: ${{ github.event_name == 'workflow_dispatch' }}
-        uses: ./.github/actions/publish-npm-package
+        uses: software-mansion-labs/npm-package-publish@main
         with:
+          package-name: 'react-native-gesture-handler'
+          package-json-path: 'packages/react-native-gesture-handler/package.json'
           release-type: ${{ inputs.release-type }}
           version: ${{ inputs.version }}
           dry-run: ${{ inputs.dry-run }}
+          install-dependencies-command: 'yarn install --immutable'
 
-      - name: Publish automatic commitly release
-        if: ${{ github.event_name == 'push' }}
-        uses: ./.github/actions/publish-npm-package
-        with:
-          release-type: 'commitly'
-          dry-run: false
+      # - name: Publish automatic commitly release
+      #   if: ${{ github.event_name == 'push' }}
+      #   uses: ./.github/actions/publish-npm-package
+      #   with:
+      #     release-type: 'commitly'
+      #     dry-run: false

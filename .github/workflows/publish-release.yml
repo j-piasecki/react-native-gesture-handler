@@ -16,6 +16,7 @@ on:
           - stable
           - beta
           - rc
+          - nightly
         default: stable
       version:
         description: Specific version to publish (usually inferred from x.y-stable branch name).
